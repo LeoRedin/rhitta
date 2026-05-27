@@ -16,10 +16,10 @@ The canonical operating manual lives in [`AGENTS.md`](./AGENTS.md). Architectura
 
 ## Local setup
 
-Requires Node 22.11.0 (`.nvmrc`) and pnpm 10.x.
+Requires Node 22.22.3 (`.nvmrc`) and pnpm 10.x.
 
 ```bash
-nvm use            # picks up Node 22.11.0
+nvm use            # picks up Node 22.22.3
 corepack enable    # uses the pinned pnpm in package.json
 pnpm install
 pnpm validate      # lint + typecheck + structure validation
