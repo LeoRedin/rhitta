@@ -1,0 +1,21 @@
+{
+  "name": "@rhitta/structure-validator",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Validates Rhitta repo structure and conventions.",
+  "bin": {
+    "rhitta-structure-validate": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsc -p tsconfig.json && node ./dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "validate": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "typescript": "6.0.3"
+  }
+}

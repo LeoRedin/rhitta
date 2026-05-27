@@ -1,0 +1,32 @@
+{
+  "name": "rhitta",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Opinionated agentic-AI-first monorepo boilerplate.",
+  "license": "MIT",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=22.11.0",
+    "pnpm": ">=10.0.0"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "validate": "pnpm -r --parallel validate && pnpm structure:validate",
+    "structure:validate": "pnpm --filter @rhitta/structure-validator start",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "changeset publish",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "@changesets/changelog-github": "0.7.0",
+    "@changesets/cli": "2.31.0",
+    "@commitlint/cli": "21.0.1",
+    "@commitlint/config-conventional": "21.0.1",
+    "lefthook": "2.1.8",
+    "typescript": "6.0.3"
+  }
+}

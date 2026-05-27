@@ -1,0 +1,45 @@
+/** @type {import('@commitlint/types').UserConfig} */
+export default {
+  extends: ['@commitlint/config-conventional'],
+  rules: {
+    'type-enum': [
+      2,
+      'always',
+      [
+        'feat',
+        'fix',
+        'chore',
+        'docs',
+        'refactor',
+        'test',
+        'style',
+        'perf',
+        'build',
+        'ci',
+        'revert',
+      ],
+    ],
+    'scope-enum': [
+      2,
+      'always',
+      [
+        'api',
+        'web',
+        'mobile',
+        'design-tokens',
+        'design-system-web',
+        'design-system-mobile',
+        'contracts',
+        'tsconfig',
+        'biome-config',
+        'structure-validator',
+        'cli',
+        'docs',
+        'ci',
+        'repo',
+      ],
+    ],
+    'scope-empty': [2, 'never'],
+    'subject-case': [2, 'never', ['upper-case', 'pascal-case', 'start-case']],
+  },
+}
