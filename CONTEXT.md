@@ -1,0 +1,59 @@
+# Rhitta Glossary
+
+Canonical terms used across this monorepo. When in doubt, this file wins over conversational shorthand.
+
+## Phase
+
+A discrete shipment of Rhitta capability, defined by its own handoff document and merged as one PR. Phases are sequential and non-overlapping. Phase 0 = skeleton (shipped 2026-05-27); Phase 1 = shared packages; Phase 2 = apps; Phase 3 = CLI + generators.
+
+## Workspace
+
+A pnpm-managed package directory under `apps/*`, `packages/*`, or `tools/*`. Every workspace has a `package.json` named `@rhitta/<slug>` and either ships code, ships config, or builds tools internal to the repo.
+
+## Shared package
+
+A workspace under `packages/*` that is published (or will be published) to npm under the `@rhitta` scope. Consumed by `apps/*` and by scaffolded downstream projects. The four real Phase 1 shared packages are `@rhitta/tsconfig`, `@rhitta/biome-config`, `@rhitta/design-tokens`, `@rhitta/contracts`. Distinct from "internal tool" — see below.
+
+## Internal tool
+
+A workspace under `tools/*` that is **never published**. Consumed only within this repo or via copy-at-scaffold into downstream projects. Examples: `tools/structure-validator`, future `tools/create-rhitta`, future `tools/generators`. Excluded from changesets `fixed[]` and listed in changesets `ignore[]`.
+
+## Module (API)
+
+A self-contained feature folder under `apps/api/src/modules/<feature>/` with exactly four subfolders: `domain/`, `application/`, `infra/`, `http/`. Composed at the root via `composeRoot` and per-module `registerXModule(deps)` factories. See ADR-0003. Distinct from "module" in the TypeScript / npm sense.
+
+## Port
+
+A typed interface that the application core depends on for an external concern (DB, auth, payments, email, storage, analytics, AI providers, notifications). Lives in `domain/` or `application/` depending on the concern. See ADR-0002.
+
+## Adapter
+
+A concrete implementation of a port for a specific provider. Lives exclusively in `infra/`. Swapping providers means writing a new adapter, never restructuring the app. See ADR-0002.
+
+## Repository
+
+A specialized adapter for database access. Lives in `infra/postgres-<entity>-repository.ts`. **The only place** in the codebase allowed to import database drivers or query builders. See ADR-0005.
+
+## Contract
+
+A Zod schema + its inferred TypeScript type, exported from `@rhitta/contracts`. Used at every system boundary (HTTP request/response on the API, form schemas on web/mobile). Single source of truth for cross-stack types. See ADR-0004.
+
+## Wire schema
+
+A specific kind of contract: the shape of an entity as it crosses an external boundary (HTTP, Pub/Sub event, agent run input/output, webhook). Distinct from the "domain class" (behavioral, lives in `domain/`) and the "persistence row" (database column shape, lives near the repository). Three shapes per entity, three mappers between them. See ADR-0013.
+
+## Primitive token
+
+A raw design value (color hex, pixel spacing, font family string, ms duration) exported from `@rhitta/design-tokens`. Components **never** read primitives directly. Components read semantic tokens (below). Rebrand = swap primitive values. See ADR-0012.
+
+## Semantic token
+
+An alias in `@rhitta/design-tokens` that points at a primitive (e.g., `semantic.bg.surface` → `colors.neutral[50]` in light theme, `colors.neutral[900]` in dark). Components read **only** semantic tokens. Restyling for accessibility / new themes = swap semantic aliases. See ADR-0012.
+
+## Theme
+
+A complete mapping of every semantic token to a primitive value. Rhitta ships two themes from day 1: `light` and `dark`. On web, themes resolve via CSS variable scope (`:root` for light, `[data-theme="dark"]` for dark). On mobile, themes resolve via Ignite's themed factory hook. See ADR-0012.
+
+## tsconfig variant
+
+One of four configs exported by `@rhitta/tsconfig`: `base.json` (universal strict defaults), `node.json` (server / CLI / tools), `web.json` (Vite-bundled browser code, `jsx: preserve`), `mobile.json` (Metro-bundled React Native code, `jsx: react-jsx`). JSX strategy is intentionally asymmetric — see ADR-0014.
