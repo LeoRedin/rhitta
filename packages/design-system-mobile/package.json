@@ -2,7 +2,7 @@
 	"name": "@rhitta/design-system-mobile",
 	"version": "0.0.0",
 	"private": false,
-	"description": "Rhitta mobile design system primitives. Empty in Phase 1; Phase 2c populates.",
+	"description": "Rhitta mobile design system primitives. Ignite-themed RN components consuming @rhitta/design-tokens/semantic.",
 	"license": "MIT",
 	"type": "module",
 	"publishConfig": {
@@ -19,20 +19,39 @@
 			"types": "./dist/src/index.d.ts",
 			"default": "./dist/src/index.js"
 		},
+		"./forms": {
+			"types": "./dist/src/forms/index.d.ts",
+			"default": "./dist/src/forms/index.js"
+		},
+		"./theme": {
+			"types": "./dist/src/theme/index.d.ts",
+			"default": "./dist/src/theme/index.js"
+		},
 		"./package.json": "./package.json"
 	},
 	"scripts": {
 		"typecheck": "tsc -p tsconfig.json --noEmit",
 		"build": "tsc -p tsconfig.build.json",
-		"validate": "pnpm typecheck && pnpm build",
+		"test": "vitest run",
+		"validate": "pnpm typecheck && pnpm build && pnpm test",
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
 		"@rhitta/design-tokens": "workspace:*"
 	},
+	"peerDependencies": {
+		"react": ">=19.0.0",
+		"react-native": ">=0.76.0"
+	},
 	"devDependencies": {
 		"@rhitta/biome-config": "workspace:*",
 		"@rhitta/tsconfig": "workspace:*",
-		"typescript": "6.0.3"
+		"@types/react": "19.2.15",
+		"@types/react-test-renderer": "19.1.0",
+		"@vitejs/plugin-react": "6.0.2",
+		"react": "19.2.6",
+		"react-test-renderer": "19.2.6",
+		"typescript": "6.0.3",
+		"vitest": "4.1.7"
 	}
 }

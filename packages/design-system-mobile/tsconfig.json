@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": ".",
-		"types": []
+		"types": ["react"]
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]
