@@ -19,6 +19,18 @@
       "types": "./dist/src/shared/index.d.ts",
       "default": "./dist/src/shared/index.js"
     },
+    "./notes": {
+      "types": "./dist/src/notes/index.d.ts",
+      "default": "./dist/src/notes/index.js"
+    },
+    "./auth": {
+      "types": "./dist/src/auth/index.d.ts",
+      "default": "./dist/src/auth/index.js"
+    },
+    "./agent-runs": {
+      "types": "./dist/src/agent-runs/index.d.ts",
+      "default": "./dist/src/agent-runs/index.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {
