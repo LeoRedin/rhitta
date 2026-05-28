@@ -34,6 +34,9 @@ ADRs capture decisions that shape Rhitta. Each is short by design — read in un
 | [0020](./0020-encore-generated-api-client.md) | Encore-generated API client | Canonical typed client at `apps/web/src/lib/api-client/`; banned to bypass |
 | [0021](./0021-centralized-realtime-hook-factory.md) | Centralized realtime hook factory | All realtime subscriptions via `useRealtimeSubscription`; raw transports banned outside `lib/realtime/` |
 | [0022](./0022-radix-primitives-design-system-web.md) | Radix Primitives (not Themes) | Design-system-web wraps unstyled Radix Primitives with Tailwind v4 + design-tokens semantic CSS vars |
+| [0023](./0023-expo-router-mobile.md) | Expo Router on mobile | File-based routing mirroring web; single auth gate at `_authenticated/_layout.tsx` |
+| [0024](./0024-zustand-replaces-mobx-mobile.md) | Zustand replaces MobX | Mobile UI state via Zustand; MST stripped by the overlay |
+| [0025](./0025-mobile-post-install-overlay.md) | Mobile post-install overlay | `npx ignite-cli new` + idempotent `rhitta-overlay.sh` patches generated files |
 
 ## Authoring a new ADR
 

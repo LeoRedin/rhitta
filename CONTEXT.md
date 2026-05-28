@@ -97,3 +97,11 @@ A single React hook factory at `apps/web/src/lib/realtime/use-realtime-subscript
 ## Auth gate (web)
 
 The single TanStack Router location where unauthenticated requests are caught and redirected. Lives at `apps/web/src/routes/_authenticated/route.tsx` as a `beforeLoad` hook that reads the Better Auth session. Pages and components never check auth themselves. See AGENTS.md rule 10 + ADR-0019 (SSR session resolution).
+
+## Auth gate (mobile)
+
+The single Expo Router location where unauthenticated requests are caught and redirected. Lives at `apps/mobile/app/_authenticated/_layout.tsx`. Uses Better Auth's React client + Expo SecureStore for the session token. Screens never check auth themselves. See AGENTS.md rule 10 + ADR-0023.
+
+## Rhitta overlay (mobile)
+
+The post-install script at `apps/mobile/scripts/rhitta-overlay.sh` that patches Ignite's generated files to match Rhitta conventions: Expo Router (ADR-0023), Zustand (ADR-0024), the Encore client, design-tokens-driven Ignite themed factory, and the `@rhitta/biome-config/mobile-app` lint variant. Idempotent. Re-run after Ignite upgrades. See ADR-0025.
