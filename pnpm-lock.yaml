@@ -35,6 +35,21 @@ importers:
 
   packages/biome-config: {}
 
+  packages/design-tokens:
+    devDependencies:
+      '@rhitta/biome-config':
+        specifier: workspace:*
+        version: link:../biome-config
+      '@rhitta/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: 22.19.19
+        version: 22.19.19
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+
   packages/tsconfig: {}
 
   tools/structure-validator:
