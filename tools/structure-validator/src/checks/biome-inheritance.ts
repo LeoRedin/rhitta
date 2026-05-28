@@ -7,6 +7,7 @@ const WORKSPACE_PARENTS = ['apps', 'packages', 'tools']
 const BIOME_VARIANT_MAP: Record<string, string> = {
   'apps/api': '@rhitta/biome-config/api-app',
   'apps/web': '@rhitta/biome-config/web-app',
+  'apps/mobile': '@rhitta/biome-config/mobile-app',
   'packages/design-tokens': '@rhitta/biome-config/base',
   'packages/contracts': '@rhitta/biome-config/base',
   'packages/design-system-web': '@rhitta/biome-config/react',
@@ -166,12 +167,13 @@ export const checkBiomeInheritance: Check = ({ repoRoot }) => {
         extArr.includes('@rhitta/biome-config/base') ||
         extArr.includes('@rhitta/biome-config/react') ||
         extArr.includes('@rhitta/biome-config/api-app') ||
-        extArr.includes('@rhitta/biome-config/web-app')
+        extArr.includes('@rhitta/biome-config/web-app') ||
+        extArr.includes('@rhitta/biome-config/mobile-app')
 
       if (!includesValid) {
         failures.push({
           path: `${wsRel}/biome.json`,
-          reason: `extends ${JSON.stringify(extArr)}, expected one of "@rhitta/biome-config/base", "@rhitta/biome-config/react", "@rhitta/biome-config/api-app", or "@rhitta/biome-config/web-app"`,
+          reason: `extends ${JSON.stringify(extArr)}, expected one of "@rhitta/biome-config/base", "@rhitta/biome-config/react", "@rhitta/biome-config/api-app", "@rhitta/biome-config/web-app", or "@rhitta/biome-config/mobile-app"`,
           adrRef: 'ADR-0011',
         })
         continue
