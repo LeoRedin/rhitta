@@ -15,6 +15,10 @@ import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedNotesIndexRouteImport } from './routes/_authenticated/notes/index'
+import { Route as AuthenticatedNotesNewRouteImport } from './routes/_authenticated/notes/new'
+import { Route as AuthenticatedNotesNoteIdIndexRouteImport } from './routes/_authenticated/notes/$noteId/index'
+import { Route as AuthenticatedNotesNoteIdEditRouteImport } from './routes/_authenticated/notes/$noteId/edit'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -45,6 +49,28 @@ const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotesIndexRoute = AuthenticatedNotesIndexRouteImport.update({
+  id: '/notes/',
+  path: '/notes/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotesNewRoute = AuthenticatedNotesNewRouteImport.update({
+  id: '/notes/new',
+  path: '/notes/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotesNoteIdIndexRoute =
+  AuthenticatedNotesNoteIdIndexRouteImport.update({
+    id: '/notes/$noteId/',
+    path: '/notes/$noteId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNotesNoteIdEditRoute =
+  AuthenticatedNotesNoteIdEditRouteImport.update({
+    id: '/notes/$noteId/edit',
+    path: '/notes/$noteId/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -52,6 +78,10 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/notes/new': typeof AuthenticatedNotesNewRoute
+  '/notes/': typeof AuthenticatedNotesIndexRoute
+  '/notes/$noteId/edit': typeof AuthenticatedNotesNoteIdEditRoute
+  '/notes/$noteId/': typeof AuthenticatedNotesNoteIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -59,6 +89,10 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/notes/new': typeof AuthenticatedNotesNewRoute
+  '/notes': typeof AuthenticatedNotesIndexRoute
+  '/notes/$noteId/edit': typeof AuthenticatedNotesNoteIdEditRoute
+  '/notes/$noteId': typeof AuthenticatedNotesNoteIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,6 +102,10 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/_authenticated/notes/new': typeof AuthenticatedNotesNewRoute
+  '/_authenticated/notes/': typeof AuthenticatedNotesIndexRoute
+  '/_authenticated/notes/$noteId/edit': typeof AuthenticatedNotesNoteIdEditRoute
+  '/_authenticated/notes/$noteId/': typeof AuthenticatedNotesNoteIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -77,8 +115,21 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/notes/new'
+    | '/notes/'
+    | '/notes/$noteId/edit'
+    | '/notes/$noteId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/auth/callback' | '/auth/sign-in' | '/auth/sign-up'
+  to:
+    | '/'
+    | '/home'
+    | '/auth/callback'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/notes/new'
+    | '/notes'
+    | '/notes/$noteId/edit'
+    | '/notes/$noteId'
   id:
     | '__root__'
     | '/'
@@ -87,6 +138,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/_authenticated/notes/new'
+    | '/_authenticated/notes/'
+    | '/_authenticated/notes/$noteId/edit'
+    | '/_authenticated/notes/$noteId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,15 +196,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/notes/': {
+      id: '/_authenticated/notes/'
+      path: '/notes'
+      fullPath: '/notes/'
+      preLoaderRoute: typeof AuthenticatedNotesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notes/new': {
+      id: '/_authenticated/notes/new'
+      path: '/notes/new'
+      fullPath: '/notes/new'
+      preLoaderRoute: typeof AuthenticatedNotesNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notes/$noteId/': {
+      id: '/_authenticated/notes/$noteId/'
+      path: '/notes/$noteId'
+      fullPath: '/notes/$noteId/'
+      preLoaderRoute: typeof AuthenticatedNotesNoteIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notes/$noteId/edit': {
+      id: '/_authenticated/notes/$noteId/edit'
+      path: '/notes/$noteId/edit'
+      fullPath: '/notes/$noteId/edit'
+      preLoaderRoute: typeof AuthenticatedNotesNoteIdEditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
+  AuthenticatedNotesNewRoute: typeof AuthenticatedNotesNewRoute
+  AuthenticatedNotesIndexRoute: typeof AuthenticatedNotesIndexRoute
+  AuthenticatedNotesNoteIdEditRoute: typeof AuthenticatedNotesNoteIdEditRoute
+  AuthenticatedNotesNoteIdIndexRoute: typeof AuthenticatedNotesNoteIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
+  AuthenticatedNotesNewRoute: AuthenticatedNotesNewRoute,
+  AuthenticatedNotesIndexRoute: AuthenticatedNotesIndexRoute,
+  AuthenticatedNotesNoteIdEditRoute: AuthenticatedNotesNoteIdEditRoute,
+  AuthenticatedNotesNoteIdIndexRoute: AuthenticatedNotesNoteIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
