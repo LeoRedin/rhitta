@@ -12,17 +12,20 @@
     "base.json",
     "react.json",
     "api-app.json",
-    "web-app.json"
+    "web-app.json",
+    "mobile-app.json"
   ],
   "exports": {
     "./base": "./base.json",
     "./react": "./react.json",
     "./api-app": "./api-app.json",
     "./web-app": "./web-app.json",
+    "./mobile-app": "./mobile-app.json",
     "./base.json": "./base.json",
     "./react.json": "./react.json",
     "./api-app.json": "./api-app.json",
     "./web-app.json": "./web-app.json",
+    "./mobile-app.json": "./mobile-app.json",
     "./package.json": "./package.json"
   },
   "scripts": {

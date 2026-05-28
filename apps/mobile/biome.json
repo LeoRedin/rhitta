@@ -1,0 +1,27 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "root": false,
+  "extends": [
+    "@rhitta/biome-config/base",
+    "@rhitta/biome-config/react",
+    "@rhitta/biome-config/mobile-app"
+  ],
+  "linter": {
+    "rules": {
+      "correctness": {
+        "noUndeclaredDependencies": "off",
+        "useHookAtTopLevel": "off"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      },
+      "complexity": {
+        "noBannedTypes": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off"
+      }
+    }
+  }
+}
