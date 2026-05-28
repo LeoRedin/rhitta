@@ -8,7 +8,7 @@ const WORKSPACE_PARENTS = ['apps', 'packages', 'tools']
 // (pure JSON-config packages like @rhitta/tsconfig and @rhitta/biome-config).
 const TSCONFIG_VARIANT_MAP: Record<string, string | null> = {
   'tools/structure-validator': '@rhitta/tsconfig/node.json',
-  'apps/api': '@rhitta/tsconfig/node.json',
+  'apps/api': '@rhitta/tsconfig/api-app.json',
   'apps/web': '@rhitta/tsconfig/web.json',
   'apps/mobile': '@rhitta/tsconfig/mobile.json',
   'packages/tsconfig': null,

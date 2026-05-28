@@ -5,7 +5,7 @@ import type { Check, Failure } from '../types.js'
 const WORKSPACE_PARENTS = ['apps', 'packages', 'tools']
 
 const BIOME_VARIANT_MAP: Record<string, string> = {
-  'apps/api': '@rhitta/biome-config/base',
+  'apps/api': '@rhitta/biome-config/api-app',
   'packages/design-tokens': '@rhitta/biome-config/base',
   'packages/contracts': '@rhitta/biome-config/base',
   'packages/design-system-web': '@rhitta/biome-config/react',
@@ -163,12 +163,13 @@ export const checkBiomeInheritance: Check = ({ repoRoot }) => {
       const extArr = ext ?? []
       const includesValid =
         extArr.includes('@rhitta/biome-config/base') ||
-        extArr.includes('@rhitta/biome-config/react')
+        extArr.includes('@rhitta/biome-config/react') ||
+        extArr.includes('@rhitta/biome-config/api-app')
 
       if (!includesValid) {
         failures.push({
           path: `${wsRel}/biome.json`,
-          reason: `extends ${JSON.stringify(extArr)}, expected one of "@rhitta/biome-config/base" or "@rhitta/biome-config/react"`,
+          reason: `extends ${JSON.stringify(extArr)}, expected one of "@rhitta/biome-config/base", "@rhitta/biome-config/react", or "@rhitta/biome-config/api-app"`,
           adrRef: 'ADR-0011',
         })
         continue

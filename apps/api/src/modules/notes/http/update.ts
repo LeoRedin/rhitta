@@ -10,14 +10,11 @@
  * The use-case surfaces a `ConflictError` if the note is soft-deleted
  * (distinct from the `NotFoundError` `GetNoteUseCase` uses) — the
  * caller had a recent handle to it, so we don't pretend it's missing.
+ *
+ * Encore static-analyzer note: see `create.ts` header — concrete
+ * `*HttpRequest`/`*HttpResponse` interfaces required.
  */
-import {
-  type Note,
-  NoteIdSchema,
-  NoteSchema,
-  type UpdateNote,
-  UpdateNoteSchema,
-} from '@rhitta/contracts/notes'
+import { NoteIdSchema, NoteSchema, UpdateNoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
 import type { AuthGate } from '../../../lib/auth-gate.js'
@@ -25,7 +22,14 @@ import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
 import type { UpdateNoteUseCase } from '../application/update-note.js'
 import { notesModule } from '../module.js'
+import type { NoteHttpResponse } from './create.js'
 import { requestFromMeta } from './request-bridge.js'
+
+export interface UpdateNoteHttpRequest {
+  id: string
+  title?: string
+  body?: string
+}
 
 export type UpdateDeps = {
   authGate: AuthGate
@@ -34,9 +38,9 @@ export type UpdateDeps = {
 }
 
 export async function updateImpl(
-  req: UpdateNote & { id: string },
+  req: UpdateNoteHttpRequest,
   deps: UpdateDeps
-): Promise<Note> {
+): Promise<NoteHttpResponse> {
   try {
     const noteId = NoteIdSchema.parse(req.id)
     const input = UpdateNoteSchema.parse({ title: req.title, body: req.body })
@@ -46,7 +50,7 @@ export async function updateImpl(
       id: noteId,
       requesterId: user.userId,
     })
-    return NoteSchema.parse(note.toDTO())
+    return NoteSchema.parse(note.toDTO()) as NoteHttpResponse
   } catch (e) {
     throw mapError(e)
   }
@@ -54,7 +58,7 @@ export async function updateImpl(
 
 export const update = api(
   { method: 'PATCH', path: '/notes/:id', expose: true },
-  async (req: UpdateNote & { id: string }): Promise<Note> => {
+  async (req: UpdateNoteHttpRequest): Promise<NoteHttpResponse> => {
     return updateImpl(req, {
       authGate: authGate(),
       updateNote: notesModule().useCases.updateNote,

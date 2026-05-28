@@ -1,7 +1,7 @@
 # ADR 0011: Lint-enforced architectural boundaries (forward-spec)
 
 ## Status
-Proposed — implementation deferred to Phase 2 when target apps land.
+Accepted — Phase 2a implementation landed alongside this status flip; `@rhitta/biome-config/api-app` carries the rules; allowlist scoping via `overrides.includes` matches the table.
 
 ## Context
 Several Rhitta architectural rules — "DB clients only inside repositories," "vendor SDKs only inside adapters," "realtime transports only inside the centralized hook" — are most usefully enforced at lint time. Biome 2.x's `noRestrictedImports` rule can express these as `import X is forbidden unless the file matches glob Y`.
@@ -34,3 +34,31 @@ A separate set of structural checks (folder shape, `domain/application/infra/htt
 - The intent is durable and PR-traceable. Phase 2 implementers either honor this list or write a superseding ADR.
 - Cost: this ADR is itself speculative until Phase 2 lands. Marked `Proposed` to signal that.
 - When Phase 2 implements, a follow-up commit updates this ADR's status and links to the actual Biome config diffs.
+
+## Implementation status (Phase 2a)
+
+`packages/biome-config/api-app.json` carries the API-side ban rules. `apps/api/biome.json` extends both `@rhitta/biome-config/base` and `@rhitta/biome-config/api-app` — the explicit dual-extends is a Biome 2.4.16 workaround for transitive `extends` not propagating the formatter config.
+
+Active bans (each emits `lint/style/noRestrictedImports` errors at lint time):
+
+| Banned import | Scope where allowed | Real consumers today |
+|---------------|---------------------|----------------------|
+| `pg` | `src/modules/*/infra/**`, `src/modules/*/__tests__/**`, `src/lib/db.ts`, `src/adapters/**`, `src/modules/auth/**` | `src/lib/db.ts` (the canonical DB seam per ADR-0005); `src/modules/notes/__tests__/postgres-note-repository.test.ts` (integration test) |
+| `postgres` | same allowlist | none yet (preemptive — for the day we migrate off `pg` to `postgres.js`) |
+| `@anthropic-ai/sdk` | adapter/infra allowlist | `src/modules/agent-runs/infra/anthropic-agent-adapter.ts` |
+| `@aws-sdk/client-s3` | adapter/infra allowlist | `src/adapters/s3-storage-adapter.ts` |
+| `resend` | adapter/infra allowlist | `src/adapters/resend-email-adapter.ts` |
+| `better-auth` | `src/modules/auth/**` only | `src/modules/auth/infra/better-auth-adapter.ts`, `src/modules/auth/infra/better-auth-gate.ts` |
+| `stripe` | adapter/infra allowlist | none yet (preemptive — billing module not built) |
+| `@supabase/supabase-js` | adapter/infra allowlist | none anywhere in the repo (preemptive — Supabase isn't a Rhitta dependency in v0) |
+
+Override scope clarifications vs. the original table:
+- `src/lib/db.ts` is in the override allowlist because ADR-0005 designates it as "the one exception (the seam itself)" — it constructs the `pg.Pool` from Encore's managed `SQLDatabase` connection string.
+- `src/modules/*/__tests__/**` is allowed because integration tests for `infra/` repositories need to wire their own driver to a Testcontainers Postgres.
+
+Remaining Phase 2 rows (not yet enforced):
+- `supabase.channel(...)` / realtime transports — Phase 2b (apps/web).
+- `useState` for server-derived data — Phase 2b (apps/web); warn-only and structurally weak, so deferred.
+- Cross-module deep imports — Phase 2a deferred to `tools/structure-validator` (per ADR-0003 the structural check belongs to the validator, not Biome).
+
+`tools/structure-validator/src/checks/biome-inheritance.ts` enforces that `apps/api/biome.json` extends `@rhitta/biome-config/api-app` so the bans can't be silently dropped by switching variants.

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "extends": ["./base.json"],
+  "linter": {
+    "rules": {
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "pg": "Direct DB driver imports forbidden outside infra/postgres-*-repository.ts (see ADR-0005). Import via the repository port instead.",
+              "postgres": "Direct DB driver imports forbidden outside infra/postgres-*-repository.ts (see ADR-0005).",
+              "@supabase/supabase-js": "Vendor SDK imports forbidden outside infra/<vendor>-*-adapter.ts (see ADR-0002). Use the corresponding port.",
+              "stripe": "Vendor SDK imports forbidden outside infra/<vendor>-*-adapter.ts (see ADR-0002).",
+              "@aws-sdk/client-s3": "Vendor SDK imports forbidden outside adapters/s3-*.ts (see ADR-0002). Use the StoragePort.",
+              "@anthropic-ai/sdk": "Vendor SDK imports forbidden outside infra/anthropic-*-adapter.ts (see ADR-0002). Use the AgentProvider port.",
+              "resend": "Vendor SDK imports forbidden outside adapters/resend-*-adapter.ts (see ADR-0002). Use the EmailSender port.",
+              "better-auth": "Better Auth imports forbidden outside modules/auth/ (see ADR-0002)."
+            }
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/modules/*/infra/**",
+        "src/modules/*/__tests__/**",
+        "src/adapters/**",
+        "src/adapters/__tests__/**",
+        "src/modules/auth/**",
+        "src/lib/db.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    }
+  ]
+}

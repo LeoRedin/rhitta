@@ -2,7 +2,7 @@
   "name": "@rhitta/biome-config",
   "version": "0.0.0",
   "private": false,
-  "description": "Shared Biome configuration variants (base, react) for Rhitta workspaces.",
+  "description": "Shared Biome configuration variants (base, react, api-app) for Rhitta workspaces.",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -10,13 +10,16 @@
   },
   "files": [
     "base.json",
-    "react.json"
+    "react.json",
+    "api-app.json"
   ],
   "exports": {
     "./base": "./base.json",
     "./react": "./react.json",
+    "./api-app": "./api-app.json",
     "./base.json": "./base.json",
     "./react.json": "./react.json",
+    "./api-app.json": "./api-app.json",
     "./package.json": "./package.json"
   },
   "scripts": {

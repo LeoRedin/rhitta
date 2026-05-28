@@ -16,8 +16,18 @@
  * inside the handler (see Task 7 plan, "Option B"). Encore's declarative
  * `auth: true` route gating would require a service-level `authHandler`
  * that we'd have to thread Better Auth into; deferred to a follow-up.
+ *
+ * Encore static-analyzer note: the `api(...)` signature uses concrete
+ * `*HttpRequest`/`*HttpResponse` interfaces rather than the Zod-inferred
+ * types from `@rhitta/contracts/notes`. Encore 1.57.5's static analyzer
+ * can't resolve `z.infer<typeof Schema>` type aliases; concrete
+ * interfaces are required for the generated client + manifest. The Zod
+ * `.parse(...)` calls inside the handler still run, so ADR-0017's
+ * belt-and-braces guarantee is unchanged. The interfaces are kept in
+ * sync with the contract schemas by the runtime parse — any drift
+ * surfaces as a test/runtime failure, not silent corruption.
  */
-import { type CreateNote, CreateNoteSchema, type Note, NoteSchema } from '@rhitta/contracts/notes'
+import { CreateNoteSchema, NoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
 import type { AuthGate } from '../../../lib/auth-gate.js'
@@ -27,18 +37,44 @@ import type { CreateNoteUseCase } from '../application/create-note.js'
 import { notesModule } from '../module.js'
 import { requestFromMeta } from './request-bridge.js'
 
+/**
+ * Wire-shape mirror of `CreateNoteSchema` from `@rhitta/contracts/notes`.
+ * Concrete interface required by Encore's static analyzer (see file header).
+ */
+export interface CreateNoteHttpRequest {
+  title: string
+  body: string
+}
+
+/**
+ * Wire-shape mirror of `NoteSchema` from `@rhitta/contracts/notes`. Branded
+ * id types (`NoteId`, `UserId`) flatten to `string` at the wire boundary.
+ */
+export interface NoteHttpResponse {
+  id: string
+  authorId: string
+  title: string
+  body: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+}
+
 export type CreateDeps = {
   authGate: AuthGate
   createNote: CreateNoteUseCase
   request: Request
 }
 
-export async function createImpl(req: CreateNote, deps: CreateDeps): Promise<Note> {
+export async function createImpl(
+  req: CreateNoteHttpRequest,
+  deps: CreateDeps
+): Promise<NoteHttpResponse> {
   try {
     const input = CreateNoteSchema.parse(req)
     const user = await deps.authGate.getCurrentUser(deps.request)
     const note = await deps.createNote.execute({ ...input, authorId: user.userId })
-    return NoteSchema.parse(note.toDTO())
+    return NoteSchema.parse(note.toDTO()) as NoteHttpResponse
   } catch (e) {
     throw mapError(e)
   }
@@ -46,7 +82,7 @@ export async function createImpl(req: CreateNote, deps: CreateDeps): Promise<Not
 
 export const create = api(
   { method: 'POST', path: '/notes', expose: true },
-  async (req: CreateNote): Promise<Note> => {
+  async (req: CreateNoteHttpRequest): Promise<NoteHttpResponse> => {
     return createImpl(req, {
       authGate: authGate(),
       createNote: notesModule().useCases.createNote,

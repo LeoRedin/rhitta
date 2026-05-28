@@ -7,8 +7,11 @@
  * output. The response schema lives here, not in `@rhitta/contracts`,
  * because it's an HTTP-layer projection of `ListNotesResult` from the
  * application layer.
+ *
+ * Encore static-analyzer note: see `create.ts` header — concrete
+ * `*HttpRequest`/`*HttpResponse` interfaces required.
  */
-import { type ListNotesQuery, ListNotesQuerySchema, NoteSchema } from '@rhitta/contracts/notes'
+import { ListNotesQuerySchema, NoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
 import { z } from 'zod'
@@ -17,13 +20,25 @@ import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
 import type { ListNotesUseCase } from '../application/list-notes.js'
 import { notesModule } from '../module.js'
+import type { NoteHttpResponse } from './create.js'
 import { requestFromMeta } from './request-bridge.js'
 
 export const ListNotesResponseSchema = z.object({
   items: z.array(NoteSchema),
   nextCursor: z.string().nullable(),
 })
-export type ListNotesResponse = z.infer<typeof ListNotesResponseSchema>
+
+/** Optional query params — Encore parses these from the URL. */
+export interface ListNotesHttpRequest {
+  cursor?: string
+  limit?: number
+  includeDeleted?: boolean
+}
+
+export interface ListNotesHttpResponse {
+  items: NoteHttpResponse[]
+  nextCursor: string | null
+}
 
 export type ListDeps = {
   authGate: AuthGate
@@ -32,9 +47,9 @@ export type ListDeps = {
 }
 
 export async function listImpl(
-  req: Partial<ListNotesQuery>,
+  req: ListNotesHttpRequest,
   deps: ListDeps
-): Promise<ListNotesResponse> {
+): Promise<ListNotesHttpResponse> {
   try {
     const input = ListNotesQuerySchema.parse(req)
     const user = await deps.authGate.getCurrentUser(deps.request)
@@ -42,7 +57,7 @@ export async function listImpl(
     return ListNotesResponseSchema.parse({
       items: result.items.map((n) => n.toDTO()),
       nextCursor: result.nextCursor,
-    })
+    }) as ListNotesHttpResponse
   } catch (e) {
     throw mapError(e)
   }
@@ -50,7 +65,7 @@ export async function listImpl(
 
 export const list = api(
   { method: 'GET', path: '/notes', expose: true },
-  async (req: Partial<ListNotesQuery>): Promise<ListNotesResponse> => {
+  async (req: ListNotesHttpRequest): Promise<ListNotesHttpResponse> => {
     return listImpl(req, {
       authGate: authGate(),
       listNotes: notesModule().useCases.listNotes,

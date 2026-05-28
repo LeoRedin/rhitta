@@ -7,6 +7,7 @@
  */
 import { randomUUID } from 'node:crypto'
 import type { UserId } from '@rhitta/contracts/auth'
+import type { NoteId } from '@rhitta/contracts/notes'
 import { APIError, ErrCode } from 'encore.dev/api'
 import { beforeEach, describe, expect, test } from 'vitest'
 import type { AuthGate } from '../../../lib/auth-gate.js'
@@ -58,8 +59,8 @@ describe('createImpl (POST /notes)', () => {
     expect(note.authorId).toBe(user.userId)
     expect(note.deletedAt).toBeNull()
 
-    // Persisted
-    expect(await repo.findById(note.id)).not.toBeNull()
+    // Persisted (note.id is wire-typed `string`; the repo expects branded NoteId)
+    expect(await repo.findById(note.id as NoteId)).not.toBeNull()
 
     // Event emitted with the right payload
     expect(events.published).toHaveLength(1)
