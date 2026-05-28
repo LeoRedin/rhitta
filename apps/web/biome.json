@@ -5,5 +5,8 @@
     "@rhitta/biome-config/base",
     "@rhitta/biome-config/react",
     "@rhitta/biome-config/web-app"
-  ]
+  ],
+  "files": {
+    "includes": ["!src/routeTree.gen.ts"]
+  }
 }
