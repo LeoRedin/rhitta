@@ -5,6 +5,7 @@ import type { Check, Failure } from '../types.js'
 const WORKSPACE_PARENTS = ['apps', 'packages', 'tools']
 
 const BIOME_VARIANT_MAP: Record<string, string> = {
+  'apps/api': '@rhitta/biome-config/base',
   'packages/design-tokens': '@rhitta/biome-config/base',
   'packages/contracts': '@rhitta/biome-config/base',
   'packages/design-system-web': '@rhitta/biome-config/react',
@@ -30,7 +31,47 @@ function isFile(p: string): boolean {
 }
 
 function stripJsonComments(src: string): string {
-  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:"])\/\/.*$/gm, '$1')
+  // Strip /* */ block comments and // line comments while ignoring comment
+  // markers that appear inside JSON string literals (e.g. URLs in $schema).
+  let out = ''
+  let i = 0
+  const len = src.length
+  let inString = false
+  let escaped = false
+  while (i < len) {
+    const ch = src[i]
+    if (inString) {
+      out += ch
+      if (escaped) {
+        escaped = false
+      } else if (ch === '\\') {
+        escaped = true
+      } else if (ch === '"') {
+        inString = false
+      }
+      i++
+      continue
+    }
+    if (ch === '"') {
+      inString = true
+      out += ch
+      i++
+      continue
+    }
+    if (ch === '/' && i + 1 < len && src[i + 1] === '/') {
+      while (i < len && src[i] !== '\n') i++
+      continue
+    }
+    if (ch === '/' && i + 1 < len && src[i + 1] === '*') {
+      i += 2
+      while (i < len && !(src[i] === '*' && src[i + 1] === '/')) i++
+      i += 2
+      continue
+    }
+    out += ch
+    i++
+  }
+  return out
 }
 
 function readExtendsArray(file: string): string[] | undefined {

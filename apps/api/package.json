@@ -1,0 +1,40 @@
+{
+  "name": "@rhitta/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Rhitta backend API — Encore.ts service hosting notes, auth, and agent-runs modules.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "encore run",
+    "build": "encore build docker rhitta-api",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "pnpm typecheck && pnpm test",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.99.0",
+    "@aws-sdk/client-s3": "3.1055.0",
+    "@rhitta/contracts": "workspace:*",
+    "better-auth": "1.6.11",
+    "drizzle-orm": "0.45.2",
+    "encore.dev": "1.57.5",
+    "pg": "8.21.0",
+    "resend": "6.12.4",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@rhitta/biome-config": "workspace:*",
+    "@rhitta/tsconfig": "workspace:*",
+    "@types/node": "22.19.19",
+    "@types/pg": "8.20.0",
+    "@vitest/coverage-v8": "4.1.7",
+    "drizzle-kit": "0.31.10",
+    "testcontainers": "12.0.1",
+    "typescript": "6.0.3",
+    "vitest": "4.1.7"
+  }
+}
