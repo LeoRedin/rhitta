@@ -8,8 +8,13 @@ import { Pool } from 'pg'
  * passed `migrations.path` + `source: "drizzle"` so Encore drives Drizzle
  * Kit's migration runner during `encore run` / deploy.
  *
- * Migrations live centrally at `apps/api/drizzle/` (Task 16 decision —
- * Drizzle Kit's single-out-dir model doesn't accept per-module dirs).
+ * Migrations live centrally at `apps/api/src/lib/drizzle/` (Task 16
+ * decision — Drizzle Kit's single-out-dir model doesn't accept per-module
+ * dirs). The path is `./drizzle` relative to *this file* because Encore's
+ * SQLDatabase resolver treats `migrations.path` as relative to the file
+ * declaring the SQLDatabase, not the service/encore.app root — keeping
+ * the migrations dir next to `db.ts` matches ADR-0005's seam-locality
+ * principle and makes Encore's resolver happy.
  */
 export const db = new SQLDatabase('rhitta', {
   migrations: {

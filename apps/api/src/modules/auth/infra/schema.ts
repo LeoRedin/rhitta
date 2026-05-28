@@ -12,8 +12,9 @@
  * columns. If the columns drift from this layout, Better Auth fails at
  * the first query with an opaque "column not found" error.
  *
- * Migrations live centrally at `apps/api/drizzle/` (Task 16 decision).
- * The matching migration is `0001_auth_tables.sql`.
+ * Migrations live centrally at `apps/api/src/lib/drizzle/` (Task 16
+ * decision; relocated next to `lib/db.ts` so Encore's file-relative
+ * resolution finds them). The matching migration is `0001_auth_tables.sql`.
  */
 import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 

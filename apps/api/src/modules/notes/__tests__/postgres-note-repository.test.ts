@@ -19,7 +19,8 @@ import { PostgresNoteRepository } from '../infra/postgres-note-repository.js'
  * The repository accepts a `NodePgDatabase` via constructor (rather than
  * importing from `lib/db.ts`), so the test can wire it to the container
  * without dragging in Encore's `SQLDatabase`. The shared migrations
- * folder at `apps/api/drizzle/` is applied via Drizzle's
+ * folder at `apps/api/src/lib/drizzle/` (next to `db.ts` per Encore's
+ * file-relative resolution) is applied via Drizzle's
  * `node-postgres/migrator`.
  *
  * The suite is `describe.skipIf`'d on Docker availability so the test
@@ -53,7 +54,7 @@ describe.skipIf(!dockerAvailable)('PostgresNoteRepository', () => {
     pool = new Pool({ connectionString: container.getConnectionUri() })
     testOrm = drizzle(pool)
     const here = path.dirname(fileURLToPath(import.meta.url))
-    const migrationsFolder = path.resolve(here, '../../../../drizzle')
+    const migrationsFolder = path.resolve(here, '../../../lib/drizzle')
     await migrate(testOrm, { migrationsFolder })
     repo = new PostgresNoteRepository(testOrm)
   }, 120_000)

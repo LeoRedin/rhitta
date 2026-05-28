@@ -14,7 +14,7 @@
  * Per ADR-0009, Better Auth is fixed at `better-auth@1.6.11`. The
  * Drizzle adapter is wired against the schema defined in `./schema.ts`
  * (the four canonical Better Auth tables: user, session, account,
- * verification). The migration is `apps/api/drizzle/0001_auth_tables.sql`.
+ * verification). The migration is `apps/api/src/lib/drizzle/0001_auth_tables.sql`.
  */
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
