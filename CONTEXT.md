@@ -57,3 +57,27 @@ A complete mapping of every semantic token to a primitive value. Rhitta ships tw
 ## tsconfig variant
 
 One of four configs exported by `@rhitta/tsconfig`: `base.json` (universal strict defaults), `node.json` (server / CLI / tools), `web.json` (Vite-bundled browser code, `jsx: preserve`), `mobile.json` (Metro-bundled React Native code, `jsx: react-jsx`). JSX strategy is intentionally asymmetric — see ADR-0014.
+
+## Use-case
+
+An application-layer object orchestrating a single domain operation (e.g., `CreateNoteUseCase`, `RunAgentUseCase`). Lives in `apps/api/src/modules/<feature>/application/`. Receives ports via DI; never imports vendor SDKs directly. Pure logic — no HTTP, no DB queries, no framework. One use-case per intent. See ADR-0003.
+
+## Reference resource
+
+The canonical example entity that demonstrates the full hexagonal + module-DI stack inside `apps/api`. For Phase 2a, the reference resource is **Note** (user-owned, simple CRUD with branded `NoteId`, soft delete, pagination). Used as the worked example in all module-pattern documentation. Distinct from any production entity in a downstream Rhitta consumer.
+
+## Agent run
+
+A single invocation of an AI agent via the `AgentProvider` port. Phase 2a ships sync HTTP only (`POST /agent-runs { input } → { output }`). Async runs with a state machine (queued/running/done) and Pub/Sub-driven workers are a future extension; the `AgentProvider` interface is shaped to permit both.
+
+## Domain error
+
+A typed error class extending `DomainError`. Concrete subclasses: `NotFoundError`, `ValidationError`, `ConflictError`, `UnauthorizedError`, `ForbiddenError`, `RateLimitedError`. Use-cases throw these; the central mapper in `apps/api/src/lib/error-mapper.ts` translates each to Encore's `APIError` with the right HTTP status. Handlers never set status codes manually. See ADR-0018.
+
+## Event publisher
+
+The port through which domain events leave a use-case. Lives in `apps/api/src/lib/pub-sub.ts`. Default adapter wraps Encore.ts's native Pub/Sub. Phase 2a ships one event (`NoteCreated`) with no subscribers — demonstrates the seam without forcing event-handler infrastructure.
+
+## Migration
+
+A versioned SQL file under `apps/api/src/modules/<feature>/infra/migrations/` describing one forward-only schema change. Authored via Drizzle Kit. Applied at app startup (development) or via a CI step (production). Repositories must never run DDL outside migration files. See ADR-0016.
