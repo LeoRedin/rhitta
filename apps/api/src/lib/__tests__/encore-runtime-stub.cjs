@@ -22,6 +22,13 @@ class InertResource {
   async publish() {
     return 'stub-message-id'
   }
+  // SQLDatabase.connectionString delegates to `impl.connString()`. The
+  // value is never connected to anything in unit tests — but it has to
+  // be a string so consumers (e.g. `new pg.Pool({ connectionString })`)
+  // don't blow up at construction time.
+  connString() {
+    return 'postgres://stub:stub@localhost:5432/stub'
+  }
 }
 
 class Runtime {

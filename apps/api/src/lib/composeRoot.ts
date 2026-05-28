@@ -1,3 +1,4 @@
+import { registerAuthModule } from '../modules/auth/module.js'
 import { type AuthGate, StubAuthGate } from './auth-gate.js'
 import { EncoreEventPublisher, type EventPublisher, InMemoryEventPublisher } from './pub-sub.js'
 
@@ -16,13 +17,16 @@ export type AppDeps = {
 /**
  * Production root. Returns adapters that talk to real infrastructure.
  *
- * The `authGate` is still a `StubAuthGate` at this point — Task 4
- * replaces it with a Better Auth-backed implementation.
+ * The `authGate` is now wired to Better Auth via `registerAuthModule()`
+ * (Task 4). The auth module also re-exports `authHandler`, which Encore
+ * picks up to serve `/auth/*` routes — that mount happens at module
+ * import time, not here.
  */
 export function composeRoot(): AppDeps {
+  const auth = registerAuthModule()
   return {
     eventPublisher: new EncoreEventPublisher(),
-    authGate: new StubAuthGate(),
+    authGate: auth.authGate,
   }
 }
 
@@ -30,6 +34,11 @@ export function composeRoot(): AppDeps {
  * Test root. Returns in-memory adapters so use-case tests can run
  * without any external infrastructure. `overrides` lets a test swap in
  * a custom adapter (e.g. a hand-rolled spy `AuthGate`).
+ *
+ * Note: this intentionally keeps `StubAuthGate` rather than the real
+ * Better Auth-backed gate — instantiating Better Auth would require a
+ * live Postgres. Tests that need a real session should construct a
+ * `BetterAuthGate` directly with a hand-rolled fake auth instance.
  */
 export function composeTestRoot(overrides: Partial<AppDeps> = {}): AppDeps {
   return {
