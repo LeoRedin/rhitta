@@ -30,6 +30,10 @@ ADRs capture decisions that shape Rhitta. Each is short by design — read in un
 | [0016](./0016-drizzle-orm-canonical-repository.md) | Drizzle ORM | Canonical repository tool with SQL-first migrations |
 | [0017](./0017-belt-and-braces-validation.md) | Belt-and-braces validation | Encore TS-derived wire validation + explicit Zod runtime parse |
 | [0018](./0018-domain-errors-central-mapper.md) | Domain errors + central mapper | Typed `DomainError` hierarchy mapped to HTTP status in one file |
+| [0019](./0019-ssr-first-web-app.md) | SSR-first web app | `apps/web` renders server-side first; auth-gated routes resolve before HTML |
+| [0020](./0020-encore-generated-api-client.md) | Encore-generated API client | Canonical typed client at `apps/web/src/lib/api-client/`; banned to bypass |
+| [0021](./0021-centralized-realtime-hook-factory.md) | Centralized realtime hook factory | All realtime subscriptions via `useRealtimeSubscription`; raw transports banned outside `lib/realtime/` |
+| [0022](./0022-radix-primitives-design-system-web.md) | Radix Primitives (not Themes) | Design-system-web wraps unstyled Radix Primitives with Tailwind v4 + design-tokens semantic CSS vars |
 
 ## Authoring a new ADR
 
