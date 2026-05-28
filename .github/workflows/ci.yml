@@ -30,6 +30,37 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # ---------------------------------------------------------------------
+      # API client generation + drift check.
+      #
+      # Per ADR-0020, the Encore-generated TypeScript SDK at
+      # apps/web/src/lib/api-client/api-client.ts is committed to the repo
+      # and PRs that change apps/api must include the regenerated client.
+      #
+      # CURRENTLY DEFERRED (Phase 2b Task 5):
+      #   `encore gen client` requires (a) the Encore CLI installed on the
+      #   runner and (b) a one-time `encore auth login` to fetch development
+      #   secrets metadata from encore.cloud — even when the app stores no
+      #   secrets there. The CLI install is trivial (`curl … | bash`); the
+      #   auth login is not (it's interactive / requires a token secret).
+      #
+      #   The committed api-client.ts is a placeholder until the first
+      #   developer with an Encore Cloud account regenerates it locally
+      #   (see apps/web/src/lib/api-client/README.md). Once that lands,
+      #   uncomment the two steps below and add an `ENCORE_AUTH_TOKEN`
+      #   repository secret so CI can run `encore auth login --auth-key`
+      #   before `gen:api-client`.
+      # ---------------------------------------------------------------------
+      # - name: Generate API client
+      #   run: pnpm --filter @rhitta/web gen:api-client
+      #
+      # - name: Verify API client is up-to-date
+      #   run: |
+      #     if ! git diff --exit-code apps/web/src/lib/api-client/api-client.ts; then
+      #       echo "::error::Generated API client differs from committed version. Run 'pnpm --filter @rhitta/web gen:api-client' and commit the changes."
+      #       exit 1
+      #     fi
+
       - name: Build packages
         run: pnpm -r --filter './packages/**' build
 

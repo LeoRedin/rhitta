@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate": "pnpm typecheck && pnpm test",
-    "gen:api-client": "echo 'gen:api-client lands in Task 5'"
+    "gen:api-client": "bash ./scripts/gen-api-client.sh"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.15",
