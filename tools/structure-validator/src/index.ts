@@ -2,6 +2,7 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkBiomeInheritance } from './checks/biome-inheritance.js'
+import { checkModuleShape } from './checks/module-shape.js'
 import { checkPackageNaming } from './checks/package-naming.js'
 import { checkRequiredTopLevel } from './checks/required-top-level.js'
 import { checkTsconfigInheritance } from './checks/tsconfig-inheritance.js'
@@ -23,6 +24,7 @@ const CHECKS: Check[] = [
   checkBiomeInheritance,
   checkPackageNaming,
   checkWorkspaceDeps,
+  checkModuleShape,
 ]
 
 function main(): number {
