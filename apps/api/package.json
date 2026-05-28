@@ -18,6 +18,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "0.99.0",
     "@aws-sdk/client-s3": "3.1055.0",
+    "@aws-sdk/s3-request-presigner": "3.1055.0",
     "@rhitta/contracts": "workspace:*",
     "better-auth": "1.6.11",
     "drizzle-orm": "0.45.2",
