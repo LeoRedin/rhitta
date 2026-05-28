@@ -1,0 +1,10 @@
+{
+	"extends": "@rhitta/tsconfig/mobile.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": ".",
+		"types": []
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}
