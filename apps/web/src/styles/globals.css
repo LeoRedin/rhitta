@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "@rhitta/design-tokens/css";
+@import "@rhitta/design-tokens/tailwind";
+
+/* Base layer — sane defaults applied via semantic tokens */
+@layer base {
+  html {
+    background-color: var(--color-bg-app);
+    color: var(--color-text-body);
+    font-family: var(--font-sans);
+  }
+}

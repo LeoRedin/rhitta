@@ -1,0 +1,9 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "root": false,
+  "extends": [
+    "@rhitta/biome-config/base",
+    "@rhitta/biome-config/react",
+    "@rhitta/biome-config/web-app"
+  ]
+}
