@@ -44,7 +44,7 @@ export class BetterAuthGate implements AuthGate {
 
   async getCurrentUser(req: Request): Promise<{ userId: UserId; email: string }> {
     const result = await this.auth.api.getSession({ headers: req.headers })
-    if (!result || !result.user) {
+    if (!result?.user) {
       throw new UnauthorizedError('Not authenticated')
     }
     return {
