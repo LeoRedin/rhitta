@@ -85,6 +85,12 @@ export interface AgentRunsNamespace {
   run(input: AgentRunRequest): Promise<AgentRunResponse>
 }
 
+/** Typed namespace covering the streaming endpoints consumed by the realtime hook factory. */
+export interface EventsNamespace {
+  // SSE endpoint — consumed by `useRealtimeSubscription`, not called directly.
+  streamNotes(): EventSource
+}
+
 /**
  * Placeholder Encore client.
  *
@@ -98,6 +104,7 @@ export interface AgentRunsNamespace {
 export class Client {
   readonly notes!: NotesNamespace
   readonly agentRuns!: AgentRunsNamespace
+  readonly events!: EventsNamespace
 
   constructor(_target: BaseURL, _options?: ClientOptions) {
     throw new Error(REGEN_HINT)

@@ -14,9 +14,12 @@
 // =============================================================================
 
 import { Card, Spinner } from '@rhitta/design-system-web'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useNotes } from '../../../lib/queries/index.js'
+import { queryKeys } from '../../../lib/queries/keys.js'
+import { useRealtimeSubscription } from '../../../lib/realtime/index.js'
 
 export const Route = createFileRoute('/_authenticated/notes/')({
   component: NotesListPage,
@@ -25,6 +28,13 @@ export const Route = createFileRoute('/_authenticated/notes/')({
 function NotesListPage() {
   const [cursor, setCursor] = useState<string | undefined>(undefined)
   const { data, isPending, error } = useNotes({ cursor, limit: 20 })
+  const queryClient = useQueryClient()
+
+  // Invalidate the notes list cache whenever a new note is created by any
+  // session — the list page picks up the change on next render.
+  useRealtimeSubscription('note-created', () => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
+  }, [])
 
   return (
     <section className="flex flex-col gap-6">

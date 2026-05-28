@@ -31,6 +31,10 @@
       "types": "./dist/src/agent-runs/index.d.ts",
       "default": "./dist/src/agent-runs/index.js"
     },
+    "./events": {
+      "types": "./dist/src/events/index.d.ts",
+      "default": "./dist/src/events/index.js"
+    },
     "./package.json": "./package.json"
   },
   "scripts": {

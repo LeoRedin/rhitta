@@ -34,6 +34,7 @@ import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import { sseEventBus } from '../../../lib/event-bus.js'
 import type { Assert, Equals } from '../../../lib/type-assert.js'
 import type { CreateNoteUseCase } from '../application/create-note.js'
 import { notesModule } from '../module.js'
@@ -85,11 +86,21 @@ export async function createImpl(
 export const create = api(
   { method: 'POST', path: '/notes', expose: true },
   async (req: CreateNoteHttpRequest): Promise<NoteHttpResponse> => {
-    return createImpl(req, {
+    const note = await createImpl(req, {
       authGate: authGate(),
       createNote: notesModule().useCases.createNote,
       request: requestFromMeta(currentRequest()),
     })
+
+    // Broadcast to the in-process event bus so SSE subscribers (the
+    // `/events/notes` stream) receive the event in realtime.
+    sseEventBus.emit('note-created', {
+      noteId: note.id,
+      authorId: note.authorId,
+      occurredAt: new Date(),
+    })
+
+    return note
   }
 )
 

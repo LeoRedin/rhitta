@@ -82,3 +82,7 @@ Statically un-enforceable bans (per ADR-0021) — discipline enforced by code re
 Biome's `noRestrictedImports` operates on module specifiers and cannot ban global constructors.
 
 `tools/structure-validator/src/checks/biome-inheritance.ts` now also requires `apps/web/biome.json` to extend `@rhitta/biome-config/web-app` (vacuous until Phase 2b Task 2 lands `apps/web`).
+
+## Implementation status (Phase 2b streaming)
+
+`apps/api/src/modules/notes/http/stream.ts` ships an SSE streaming endpoint at `GET /events/notes` that subscribes to an in-process event bus (`apps/api/src/lib/event-bus.ts`) and re-emits `note-created` events filtered by `authorId === currentUserId`. Producers (currently the `POST /notes` handler) emit to both Encore's Pub/Sub topic and the local event bus, so the streaming layer stays decoupled from durable messaging. The bus is a plain EventEmitter — the intended Phase 3 upgrade path replaces it with a shared backplane (Redis pub/sub or Encore Cloud's managed pub/sub) while keeping the streaming endpoint's interface unchanged.
