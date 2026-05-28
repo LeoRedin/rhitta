@@ -23,12 +23,17 @@ importers:
       '@commitlint/config-conventional':
         specifier: 21.0.1
         version: 21.0.1
+      '@rhitta/biome-config':
+        specifier: workspace:*
+        version: link:packages/biome-config
       lefthook:
         specifier: 2.1.8
         version: 2.1.8
       typescript:
         specifier: 6.0.3
         version: 6.0.3
+
+  packages/biome-config: {}
 
   packages/tsconfig: {}
 

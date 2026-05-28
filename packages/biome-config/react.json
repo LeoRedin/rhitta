@@ -1,0 +1,17 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "extends": ["./base.json"],
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useExhaustiveDependencies": "error"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "error"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "warn"
+      }
+    }
+  }
+}
