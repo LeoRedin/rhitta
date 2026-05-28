@@ -5,6 +5,7 @@ import { checkBiomeInheritance } from './checks/biome-inheritance.js'
 import { checkModuleShape } from './checks/module-shape.js'
 import { checkPackageNaming } from './checks/package-naming.js'
 import { checkRequiredTopLevel } from './checks/required-top-level.js'
+import { checkRouteConventions } from './checks/route-conventions.js'
 import { checkTsconfigInheritance } from './checks/tsconfig-inheritance.js'
 import { checkWorkspaceDeps } from './checks/workspace-deps.js'
 import { checkWorkspaceName } from './checks/workspace-name.js'
@@ -25,6 +26,7 @@ const CHECKS: Check[] = [
   checkPackageNaming,
   checkWorkspaceDeps,
   checkModuleShape,
+  checkRouteConventions,
 ]
 
 function main(): number {
