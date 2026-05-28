@@ -1,0 +1,39 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
+  "extends": ["./base.json"],
+  "linter": {
+    "rules": {
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "@supabase/supabase-js": "Realtime/auth client SDKs forbidden outside src/lib/realtime/ or src/lib/auth/ (see ADR-0021).",
+              "better-auth": "Better Auth direct imports forbidden outside src/lib/auth/** (see ADR-0021).",
+              "better-auth/client": "Better Auth client imports forbidden outside src/lib/auth/** (see ADR-0021).",
+              "better-auth/react": "Better Auth React client imports forbidden outside src/lib/auth/** (see ADR-0021)."
+            }
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/lib/realtime/**",
+        "src/lib/auth/**",
+        "src/lib/api-client/**",
+        "src/__tests__/**",
+        "**/__tests__/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    }
+  ]
+}

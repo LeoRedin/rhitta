@@ -57,8 +57,28 @@ Override scope clarifications vs. the original table:
 - `src/modules/*/__tests__/**` is allowed because integration tests for `infra/` repositories need to wire their own driver to a Testcontainers Postgres.
 
 Remaining Phase 2 rows (not yet enforced):
-- `supabase.channel(...)` / realtime transports — Phase 2b (apps/web).
 - `useState` for server-derived data — Phase 2b (apps/web); warn-only and structurally weak, so deferred.
 - Cross-module deep imports — Phase 2a deferred to `tools/structure-validator` (per ADR-0003 the structural check belongs to the validator, not Biome).
 
 `tools/structure-validator/src/checks/biome-inheritance.ts` enforces that `apps/api/biome.json` extends `@rhitta/biome-config/api-app` so the bans can't be silently dropped by switching variants.
+
+## Implementation status (Phase 2b)
+
+`packages/biome-config/web-app.json` carries the web-side ban rules. `apps/web/biome.json` (landing in Phase 2b Task 2) will extend `@rhitta/biome-config/base`, `@rhitta/biome-config/react`, and `@rhitta/biome-config/web-app` — the explicit triple-extends matches the Task 27 (api-app) precedent for working around Biome 2.4.16's formatter-propagation behaviour.
+
+Active bans (each emits `lint/style/noRestrictedImports` errors at lint time):
+
+| Banned import | Scope where allowed | Real consumers today |
+|---------------|---------------------|----------------------|
+| `@supabase/supabase-js` | `src/lib/realtime/**`, `src/lib/auth/**`, `src/lib/api-client/**`, `src/__tests__/**`, `**/__tests__/**` | none yet (preemptive — Supabase isn't a Rhitta dependency in v0) |
+| `better-auth` | same allowlist | none on web yet (lands with auth routes in Phase 2b) |
+| `better-auth/client` | same allowlist | none yet |
+| `better-auth/react` | same allowlist | none yet (Phase 2b auth-client task) |
+
+Statically un-enforceable bans (per ADR-0021) — discipline enforced by code review until a structure-validator AST check or custom Biome GritQL plugin lands in Phase 3:
+- Bare `new WebSocket(...)` outside `src/lib/realtime/**`.
+- Bare `new EventSource(...)` outside `src/lib/realtime/**`.
+
+Biome's `noRestrictedImports` operates on module specifiers and cannot ban global constructors.
+
+`tools/structure-validator/src/checks/biome-inheritance.ts` now also requires `apps/web/biome.json` to extend `@rhitta/biome-config/web-app` (vacuous until Phase 2b Task 2 lands `apps/web`).
