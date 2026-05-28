@@ -30,9 +30,11 @@
 import { CreateNoteSchema, NoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
+import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals } from '../../../lib/type-assert.js'
 import type { CreateNoteUseCase } from '../application/create-note.js'
 import { notesModule } from '../module.js'
 import { requestFromMeta } from './request-bridge.js'
@@ -90,3 +92,20 @@ export const create = api(
     })
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// Branded id fields (`NoteId`, `UserId`) flatten to `string` on the wire, so
+// we omit them from the comparison — they're verified by the runtime parse.
+// -----------------------------------------------------------------------------
+
+type _CreateNoteHttpRequestMatches = Assert<
+  Equals<CreateNoteHttpRequest, z.input<typeof CreateNoteSchema>>
+>
+
+type _NoteHttpResponseMatches = Assert<
+  Equals<
+    Omit<NoteHttpResponse, 'id' | 'authorId'>,
+    Omit<z.infer<typeof NoteSchema>, 'id' | 'authorId'>
+  >
+>

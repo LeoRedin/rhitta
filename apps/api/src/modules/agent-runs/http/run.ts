@@ -27,9 +27,11 @@
 import { AgentRunRequestSchema, AgentRunResponseSchema } from '@rhitta/contracts/agent-runs'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
+import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals } from '../../../lib/type-assert.js'
 import { requestFromMeta } from '../../notes/http/request-bridge.js'
 import type { RunAgentUseCase } from '../application/run-agent.js'
 import { agentRunsModule } from '../module.js'
@@ -88,3 +90,21 @@ export const run = api(
     })
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// Branded id fields (`AgentRunId`, `UserId`) flatten to `string` on the wire,
+// so we omit them from the comparison — they're verified by the runtime parse.
+// `z.input<>` keeps the request defaults optional, matching the wire shape.
+// -----------------------------------------------------------------------------
+
+type _AgentRunHttpRequestMatches = Assert<
+  Equals<AgentRunHttpRequest, z.input<typeof AgentRunRequestSchema>>
+>
+
+type _AgentRunHttpResponseMatches = Assert<
+  Equals<
+    Omit<AgentRunHttpResponse, 'id' | 'userId'>,
+    Omit<z.infer<typeof AgentRunResponseSchema>, 'id' | 'userId'>
+  >
+>

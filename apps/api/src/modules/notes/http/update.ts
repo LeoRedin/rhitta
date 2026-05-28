@@ -17,9 +17,11 @@
 import { NoteIdSchema, NoteSchema, UpdateNoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
+import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals, Flatten } from '../../../lib/type-assert.js'
 import type { UpdateNoteUseCase } from '../application/update-note.js'
 import { notesModule } from '../module.js'
 import type { NoteHttpResponse } from './create.js'
@@ -66,3 +68,16 @@ export const update = api(
     })
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// Request envelope is the path param `id` plus the body shape from
+// `UpdateNoteSchema`. Response uses the shared `NoteHttpResponse`.
+// -----------------------------------------------------------------------------
+
+type _UpdateNoteHttpRequestMatches = Assert<
+  Equals<
+    Flatten<UpdateNoteHttpRequest>,
+    Flatten<{ id: z.input<typeof NoteIdSchema> } & z.input<typeof UpdateNoteSchema>>
+  >
+>

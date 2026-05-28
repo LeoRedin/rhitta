@@ -14,9 +14,11 @@
 import { NoteIdSchema, NoteSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
+import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals } from '../../../lib/type-assert.js'
 import type { GetNoteUseCase } from '../application/get-note.js'
 import { notesModule } from '../module.js'
 import type { NoteHttpResponse } from './create.js'
@@ -59,3 +61,13 @@ export const get = api(
     )
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// Request shape is `{ id: <NoteIdSchema input> }`; response uses the shared
+// `NoteHttpResponse` from `create.ts`, whose drift guard lives there.
+// -----------------------------------------------------------------------------
+
+type _GetNoteHttpRequestMatches = Assert<
+  Equals<GetNoteHttpRequest, { id: z.input<typeof NoteIdSchema> }>
+>

@@ -16,9 +16,11 @@
 import { NoteIdSchema } from '@rhitta/contracts/notes'
 import { currentRequest } from 'encore.dev'
 import { api } from 'encore.dev/api'
+import type { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals } from '../../../lib/type-assert.js'
 import type { DeleteNoteUseCase } from '../application/delete-note.js'
 import { notesModule } from '../module.js'
 import { requestFromMeta } from './request-bridge.js'
@@ -56,3 +58,12 @@ export const deleteNote = api(
     )
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// Response is `void`, so no response assertion.
+// -----------------------------------------------------------------------------
+
+type _DeleteNoteHttpRequestMatches = Assert<
+  Equals<DeleteNoteHttpRequest, { id: z.input<typeof NoteIdSchema> }>
+>

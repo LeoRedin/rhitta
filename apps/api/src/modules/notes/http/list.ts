@@ -18,6 +18,7 @@ import { z } from 'zod'
 import type { AuthGate } from '../../../lib/auth-gate.js'
 import { authGate } from '../../../lib/auth-gate-instance.js'
 import { mapError } from '../../../lib/error-mapper.js'
+import type { Assert, Equals } from '../../../lib/type-assert.js'
 import type { ListNotesUseCase } from '../application/list-notes.js'
 import { notesModule } from '../module.js'
 import type { NoteHttpResponse } from './create.js'
@@ -73,3 +74,21 @@ export const list = api(
     })
   }
 )
+
+// -----------------------------------------------------------------------------
+// Compile-time drift guards — see `lib/type-assert.ts` and ADR-0017 addendum.
+// `z.input<>` (not `z.infer<>`) is correct for the request because
+// `ListNotesQuerySchema` supplies defaults — the wire shape has the optional
+// inputs, not the post-default outputs.
+// -----------------------------------------------------------------------------
+
+type _ListNotesHttpRequestMatches = Assert<
+  Equals<ListNotesHttpRequest, z.input<typeof ListNotesQuerySchema>>
+>
+
+type _ListNotesHttpResponseMatches = Assert<
+  Equals<
+    Omit<ListNotesHttpResponse, 'items'>,
+    Omit<z.infer<typeof ListNotesResponseSchema>, 'items'>
+  >
+>
