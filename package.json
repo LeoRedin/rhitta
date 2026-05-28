@@ -29,5 +29,16 @@
     "@rhitta/biome-config": "workspace:*",
     "lefthook": "2.1.8",
     "typescript": "6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "cpu-features",
+      "encore.dev",
+      "esbuild",
+      "lefthook",
+      "protobufjs",
+      "ssh2"
+    ]
   }
 }

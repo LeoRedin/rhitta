@@ -13,8 +13,8 @@
  * loaded.
  *
  * Tests build their own module instance via `registerAgentRunsModule({
- * provider: ... })`, or use `__setAgentRunsModuleForTesting` when
- * exercising the HTTP handler through the singleton.
+ * provider: ... })`, or use {@link setAgentRunsModule} when exercising
+ * the HTTP handler through the singleton.
  */
 import type { AgentProvider } from './application/agent-provider.js'
 import { RunAgentUseCase } from './application/run-agent.js'
@@ -51,6 +51,11 @@ export function agentRunsModule(): AgentRunsModule {
   return _instance
 }
 
-export function __setAgentRunsModuleForTesting(module: AgentRunsModule | null): void {
+/**
+ * Install (or clear, with `null`) the process-wide {@link AgentRunsModule}.
+ *
+ * Used by both production wiring (`composeRoot()`) and test setup.
+ */
+export function setAgentRunsModule(module: AgentRunsModule | null): void {
   _instance = module
 }

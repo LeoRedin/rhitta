@@ -53,13 +53,15 @@ export function registerNotesModule(deps: NotesDeps): NotesModule {
 }
 
 /**
- * Lazily-initialised production singleton. Wired the first time an HTTP
- * handler invokes it, with the real `EncoreEventPublisher` + the
- * Postgres-backed repository.
+ * Lazily-initialised production singleton. Production wiring publishes a
+ * fully-constructed module via {@link setNotesModule} in `composeRoot()`;
+ * if no one has set it (e.g. a stray import during a unit test) it
+ * lazily falls back to `EncoreEventPublisher` + the Postgres-backed
+ * repository.
  *
  * Tests must NOT import this directly — they call {@link registerNotesModule}
- * with in-memory deps, or use {@link __setNotesModuleForTesting} when
- * integration-testing an HTTP handler that reaches for the singleton via
+ * with in-memory deps, or use {@link setNotesModule} when integration-
+ * testing an HTTP handler that reaches for the singleton via
  * `notesModule()`.
  */
 let _instance: NotesModule | null = null
@@ -73,6 +75,11 @@ export function notesModule(): NotesModule {
   return _instance
 }
 
-export function __setNotesModuleForTesting(module: NotesModule | null): void {
+/**
+ * Install (or clear, with `null`) the process-wide {@link NotesModule}.
+ *
+ * Used by both production wiring (`composeRoot()`) and test setup.
+ */
+export function setNotesModule(module: NotesModule | null): void {
   _instance = module
 }
