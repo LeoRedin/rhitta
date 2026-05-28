@@ -23,6 +23,10 @@
 			"types": "./dist/src/primitives/index.d.ts",
 			"default": "./dist/src/primitives/index.js"
 		},
+		"./forms": {
+			"types": "./dist/src/forms/index.d.ts",
+			"default": "./dist/src/forms/index.js"
+		},
 		"./variants": {
 			"types": "./dist/src/variants/cva.d.ts",
 			"default": "./dist/src/variants/cva.js"
@@ -42,17 +46,20 @@
 		"@radix-ui/react-slot": "1.2.4",
 		"@radix-ui/react-toast": "1.2.15",
 		"@rhitta/design-tokens": "workspace:*",
+		"@tanstack/react-form": "1.32.1",
 		"class-variance-authority": "0.7.1"
 	},
 	"peerDependencies": {
 		"react": ">=19.0.0",
-		"react-dom": ">=19.0.0"
+		"react-dom": ">=19.0.0",
+		"zod": ">=4.0.0"
 	},
 	"devDependencies": {
 		"@rhitta/biome-config": "workspace:*",
 		"@rhitta/tsconfig": "workspace:*",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/react": "16.3.2",
+		"@testing-library/user-event": "14.6.1",
 		"@types/react": "19.2.15",
 		"@types/react-dom": "19.2.3",
 		"@vitejs/plugin-react": "6.0.2",
@@ -60,6 +67,7 @@
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
 		"typescript": "6.0.3",
-		"vitest": "4.1.7"
+		"vitest": "4.1.7",
+		"zod": "4.4.3"
 	}
 }
