@@ -2,6 +2,9 @@
 node_modules/
 .pnpm-store/
 
+# Encore CLI workspace-local install (apps/api/scripts/build-docker.sh)
+.encore/
+
 # Build output
 dist/
 build/
