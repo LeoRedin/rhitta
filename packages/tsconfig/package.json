@@ -1,0 +1,28 @@
+{
+  "name": "@rhitta/tsconfig",
+  "version": "0.0.0",
+  "private": false,
+  "description": "Shared TypeScript configuration variants (base, node, web, mobile) for Rhitta workspaces.",
+  "license": "MIT",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "base.json",
+    "node.json",
+    "web.json",
+    "mobile.json"
+  ],
+  "exports": {
+    "./base.json": "./base.json",
+    "./node.json": "./node.json",
+    "./web.json": "./web.json",
+    "./mobile.json": "./mobile.json",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "echo no-op",
+    "validate": "echo no-op"
+  }
+}

@@ -30,8 +30,13 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
+  packages/tsconfig: {}
+
   tools/structure-validator:
     devDependencies:
+      '@rhitta/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
       '@types/node':
         specifier: 22.19.19
         version: 22.19.19
