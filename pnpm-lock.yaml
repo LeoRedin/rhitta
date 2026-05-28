@@ -51,6 +51,22 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
+  packages/design-system-web:
+    dependencies:
+      '@rhitta/design-tokens':
+        specifier: workspace:*
+        version: link:../design-tokens
+    devDependencies:
+      '@rhitta/biome-config':
+        specifier: workspace:*
+        version: link:../biome-config
+      '@rhitta/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+
   packages/design-tokens:
     devDependencies:
       '@rhitta/biome-config':

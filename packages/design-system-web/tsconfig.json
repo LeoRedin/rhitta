@@ -1,0 +1,10 @@
+{
+	"extends": "@rhitta/tsconfig/web.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": ".",
+		"types": []
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}
