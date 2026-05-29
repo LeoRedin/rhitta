@@ -19,6 +19,8 @@
  *     overwriting the previous instances. We don't expect more than one
  *     call in practice (Encore loads `encore.service.ts` once at boot).
  */
+// Side-effect first: load a local .env before readEnv() snapshots process.env.
+import './load-env.js'
 import { InMemoryEmailAdapter } from '../adapters/in-memory-email-adapter.js'
 import { InMemoryStorageAdapter } from '../adapters/in-memory-storage-adapter.js'
 import { ResendEmailAdapter } from '../adapters/resend-email-adapter.js'

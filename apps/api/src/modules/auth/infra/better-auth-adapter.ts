@@ -16,6 +16,9 @@
  * (the four canonical Better Auth tables: user, session, account,
  * verification). The migration is `apps/api/src/lib/drizzle/0001_auth_tables.sql`.
  */
+// Side-effect first: populate process.env from a local .env before this module
+// reads BETTER_AUTH_SECRET / BETTER_AUTH_URL at construction time.
+import '../../../lib/load-env.js'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'

@@ -2,13 +2,16 @@
 
 The Rhitta web client — a [TanStack Start](https://tanstack.com/start) **SSR** app consuming the `@rhitta/api` Encore service.
 
-## Run
+## Run locally
+
+Start the API first (`pnpm dev:api`), then:
 
 ```bash
-pnpm dev:web          # from the repo root
-# or: pnpm --filter @rhitta/web dev   (runs Vite)
+pnpm dev:web          # from the repo root — or: pnpm --filter @rhitta/web dev (Vite)
 pnpm --filter @rhitta/web start       # serve the production build
 ```
+
+`.env` is pre-created from `.env.example` (gitignored) with `VITE_API_URL`/`VITE_BETTER_AUTH_URL` pointing at the local API (`http://localhost:4000`). Vite loads it automatically.
 
 ## Architecture
 

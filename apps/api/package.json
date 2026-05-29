@@ -21,6 +21,7 @@
     "@aws-sdk/s3-request-presigner": "3.1055.0",
     "@rhitta/contracts": "workspace:*",
     "better-auth": "1.6.11",
+    "dotenv": "16.6.1",
     "drizzle-orm": "0.45.2",
     "encore.dev": "1.57.5",
     "pg": "8.21.0",

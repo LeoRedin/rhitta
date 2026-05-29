@@ -2,14 +2,17 @@
 
 The Rhitta backend — an [Encore.ts](https://encore.dev) service hosting the `notes`, `auth`, and `agent-runs` modules.
 
-## Run
+## Run locally
+
+Prerequisites: **Docker running** + the **Encore CLI** (`curl -fsSL https://encore.dev/install.sh | bash`, or the workspace-local install from `scripts/build-docker.sh`).
 
 ```bash
-pnpm dev:api          # from the repo root
-# or: pnpm --filter @rhitta/api dev   (runs `encore run`)
+pnpm dev:api          # from the repo root — or: pnpm --filter @rhitta/api dev (encore run)
 ```
 
-Requires the Encore CLI on your PATH (`curl -fsSL https://encore.dev/install.sh | bash`) or the workspace-local install created by `scripts/build-docker.sh`.
+**No manual database setup.** On `encore run`, Encore provisions a local Postgres in Docker, injects `DATABASE_URL`, and applies the Drizzle migrations (`src/lib/drizzle/`) on startup.
+
+**No required env for local dev.** `BETTER_AUTH_SECRET`/`BETTER_AUTH_URL` have dev fallbacks, and Anthropic/Resend/S3 fall back to in-memory adapters when unset. A `.env` (copied from `.env.example` at scaffold time, gitignored) is loaded automatically via `dotenv` — drop in real keys there when you want the live adapters. Magic-link URLs are logged to the `encore run` console in dev.
 
 ## Architecture
 
