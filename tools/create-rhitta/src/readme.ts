@@ -12,6 +12,7 @@ convention-enforced monorepo for API + web + mobile.
 nvm use
 corepack enable
 pnpm install
+pnpm build      # build shared packages (they export from dist/)
 pnpm validate   # lint + typecheck + structure validation
 \`\`\`
 

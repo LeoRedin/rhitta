@@ -16,6 +16,7 @@ describe('renderReadme', () => {
     const md = renderReadme(PARAMS)
     expect(md.startsWith('# Acme')).toBe(true)
     expect(md).toContain('pnpm install')
+    expect(md).toContain('pnpm build')
     expect(md).toContain('pnpm validate')
     expect(md).toContain('apps/api')
     expect(md).toContain('apps/web')

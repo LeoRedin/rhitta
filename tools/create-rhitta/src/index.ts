@@ -17,7 +17,9 @@ async function main(): Promise<void> {
 
   log.success(`Created ${params.appName} at ${target}`)
   log.info(
-    'Next: cd in, then `pnpm validate`. For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
+    flags.install
+      ? 'Next: `cd` in, then `pnpm validate`. For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
+      : 'Next: `cd` in, then `pnpm install && pnpm build`, then `pnpm validate`. For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
   )
 }
 

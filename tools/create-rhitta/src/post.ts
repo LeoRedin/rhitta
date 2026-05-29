@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { renderReadme } from './readme.js'
 import type { ScaffoldParams } from './types.js'
 
-/** Move the transformed temp tree into the target dir, write README, git init, install. */
+/** Move the transformed temp tree into the target dir, write README, git init, install, build. */
 export function finalize(
   tempTree: string,
   params: ScaffoldParams,
@@ -33,6 +33,8 @@ export function finalize(
   }
   if (opts.install) {
     execFileSync('pnpm', ['install'], { cwd: target, stdio: 'inherit' })
+    // Shared packages export from dist/; build them so the project typechecks/validates immediately.
+    execFileSync('pnpm', ['build'], { cwd: target, stdio: 'inherit' })
   }
   return target
 }
