@@ -37,6 +37,7 @@ ADRs capture decisions that shape Rhitta. Each is short by design — read in un
 | [0023](./0023-expo-router-mobile.md) | Expo Router on mobile | File-based routing mirroring web; single auth gate at `_authenticated/_layout.tsx` |
 | [0024](./0024-zustand-replaces-mobx-mobile.md) | Zustand replaces MobX | Mobile UI state via Zustand; MST stripped by the overlay |
 | [0025](./0025-mobile-post-install-overlay.md) | Mobile post-install overlay | `npx ignite-cli new` + idempotent `rhitta-overlay.sh` patches generated files |
+| [0026](./0026-platform-correct-test-runners.md) | Platform-correct test runners | Mobile tests on jest-expo; web/api on Vitest — different problems, ecosystem-correct tools |
 
 ## Authoring a new ADR
 
