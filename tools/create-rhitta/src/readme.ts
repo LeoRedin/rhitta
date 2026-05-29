@@ -8,13 +8,20 @@ convention-enforced monorepo for API + web + mobile.
 
 ## Setup
 
+Toolchain versions are pinned in \`.tool-versions\` (Node, pnpm, Ruby).
+
 \`\`\`bash
-nvm use
-corepack enable
+# asdf users — installs the pinned Node, pnpm, and Ruby (Ruby is needed for iOS CocoaPods):
+asdf install
+# or, with nvm + corepack instead of asdf:
+nvm use && corepack enable
+
 pnpm install
 pnpm build      # build shared packages (they export from dist/)
 pnpm validate   # lint + typecheck + structure validation
 \`\`\`
+
+Run each app: \`pnpm dev:api\`, \`pnpm dev:web\`, \`pnpm dev:mobile\`.
 
 ## Workspaces
 

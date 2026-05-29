@@ -35,7 +35,9 @@ export function finalize(
   const { packageManager = '' } = JSON.parse(
     readFileSync(resolve(target, 'package.json'), 'utf8')
   ) as { packageManager?: string }
-  writeFileSync(resolve(target, '.tool-versions'), deriveToolVersions(nvmrc, packageManager))
+  const rubyVersionPath = resolve(target, '.ruby-version')
+  const ruby = existsSync(rubyVersionPath) ? readFileSync(rubyVersionPath, 'utf8') : undefined
+  writeFileSync(resolve(target, '.tool-versions'), deriveToolVersions(nvmrc, packageManager, ruby))
 
   if (opts.git) {
     execFileSync('git', ['init', '-q'], { cwd: target })
