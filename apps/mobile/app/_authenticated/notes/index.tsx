@@ -7,15 +7,22 @@
 // query with data.nextCursor. FlatList is the RN-native scroll surface.
 // =============================================================================
 
+import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import { useNotes } from '../../../src/lib/queries/index.js'
+import { queryKeys } from '../../../src/lib/queries/keys.js'
+import { useRealtimeSubscription } from '../../../src/lib/realtime/index.js'
 
 export default function NotesListPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const [cursor, setCursor] = useState<string | undefined>(undefined)
   const { data, isPending, error } = useNotes({ cursor, limit: 20 })
+  useRealtimeSubscription('note-created', () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
+  }, [])
 
   if (isPending) {
     return (
