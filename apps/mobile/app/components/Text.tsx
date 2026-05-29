@@ -1,6 +1,5 @@
 import type { TOptions } from 'i18next'
 import { type ForwardedRef, forwardRef, type ReactNode } from 'react'
-// eslint-disable-next-line no-restricted-imports
 import {
   Text as RNText,
   type TextProps as RNTextProps,

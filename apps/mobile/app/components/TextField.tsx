@@ -2,7 +2,6 @@ import { type ComponentType, forwardRef, type Ref, useImperativeHandle, useRef }
 import {
   type ImageStyle,
   type StyleProp,
-  // eslint-disable-next-line no-restricted-imports
   TextInput,
   type TextInputProps,
   type TextStyle,

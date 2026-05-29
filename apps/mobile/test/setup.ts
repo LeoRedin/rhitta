@@ -1,5 +1,4 @@
 // we always make sure 'react-native' gets included first
-// eslint-disable-next-line no-restricted-imports
 import * as ReactNative from 'react-native'
 
 import mockFile from './mockFile'
@@ -11,12 +10,12 @@ jest.doMock('react-native', () => {
     {
       Image: {
         ...ReactNative.Image,
-        resolveAssetSource: jest.fn((_source) => mockFile), // eslint-disable-line @typescript-eslint/no-unused-vars
+        resolveAssetSource: jest.fn((_source) => mockFile),
         getSize: jest.fn(
           (
-            _uri: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+            _uri: string,
             success: (width: number, height: number) => void,
-            _failure?: (_error: any) => void // eslint-disable-line @typescript-eslint/no-unused-vars
+            _failure?: (_error: any) => void
           ) => success(100, 100)
         ),
       },
@@ -51,7 +50,7 @@ jest.mock('../app/i18n/index.ts', () => ({
   },
 }))
 
-declare const tron: unknown // eslint-disable-line @typescript-eslint/no-unused-vars
+declare const tron: unknown
 
 declare global {
   let __TEST__: boolean

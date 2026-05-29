@@ -17,7 +17,6 @@ type StatusCallback = (status: 'connecting' | 'open' | 'closed') => void
 // Each casts through `unknown` to bypass the missing type — the runtime
 // guard and the `AbortSignal.any` / `TextDecoder` checks below ensure we
 // only call them when the platform supports them.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const g = globalThis as any
 const gAbortSignal = AbortSignal as any
 const gTextDecoder = g.TextDecoder as
@@ -57,7 +56,6 @@ export function createSSEConnection<T>(
       }
 
       // ReadableStream on response.body — Hermes >=0.13 (absent from RN types).
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const body: any = (response as unknown as { body: any | null }).body
       if (!body) {
         onStatusChange('closed')
@@ -65,7 +63,6 @@ export function createSSEConnection<T>(
       }
 
       onStatusChange('open')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const reader: any = body.getReader()
 
       // TextDecoder — Hermes >=0.12.
@@ -78,7 +75,6 @@ export function createSSEConnection<T>(
 
       try {
         while (true) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { done, value }: { done: boolean; value: any } = await reader.read()
           if (done) break
 
