@@ -1,7 +1,8 @@
 import { execFileSync } from 'node:child_process'
-import { cpSync, existsSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { renderReadme } from './readme.js'
+import { deriveToolVersions } from './toolversions.js'
 import type { ScaffoldParams } from './types.js'
 
 /** Move the transformed temp tree into the target dir, write README, git init, install, build. */
@@ -27,6 +28,14 @@ export function finalize(
   }
 
   writeFileSync(resolve(target, 'README.md'), renderReadme(params))
+
+  // Emit .tool-versions (derived from .nvmrc + packageManager) so asdf users — and the
+  // pnpm calls below — resolve node + pnpm in the new dir with no manual setup.
+  const nvmrc = readFileSync(resolve(target, '.nvmrc'), 'utf8')
+  const { packageManager = '' } = JSON.parse(
+    readFileSync(resolve(target, 'package.json'), 'utf8')
+  ) as { packageManager?: string }
+  writeFileSync(resolve(target, '.tool-versions'), deriveToolVersions(nvmrc, packageManager))
 
   if (opts.git) {
     execFileSync('git', ['init', '-q'], { cwd: target })
