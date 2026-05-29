@@ -16,11 +16,12 @@ const EXCEPTIONS: string[] = [
   'hello',
 ]
 
-function iterate(obj, stack, array) {
+function iterate(obj: object, stack: string, array: string[]): string[] {
   for (const property in obj) {
     if (Object.hasOwn(obj, property)) {
-      if (typeof (obj as object)[property] === 'object') {
-        iterate(obj[property], `${stack}.${property}`, array)
+      const child = (obj as Record<string, unknown>)[property]
+      if (typeof child === 'object' && child !== null) {
+        iterate(child as object, `${stack}.${property}`, array)
       } else {
         array.push(`${stack.slice(1)}.${property}`)
       }
@@ -63,10 +64,10 @@ describe('i18n', () => {
       const allTranslationsUsed = stdout.replace(/"/g, '').split('\n')
       allTranslationsUsed.splice(-1, 1)
 
-      for (let i = 0; i < allTranslationsUsed.length; i += 1) {
-        if (!EXCEPTIONS.includes(allTranslationsUsed[i])) {
+      for (const used of allTranslationsUsed) {
+        if (!EXCEPTIONS.includes(used)) {
           // You can add keys to EXCEPTIONS (above) if you don't want them included in the test
-          expect(allTranslationsDefined).toContainEqual(allTranslationsUsed[i])
+          expect(allTranslationsDefined).toContainEqual(used)
         }
       }
       done()

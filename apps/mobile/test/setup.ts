@@ -51,7 +51,7 @@ jest.mock('../app/i18n/index.ts', () => ({
   },
 }))
 
-declare const tron // eslint-disable-line @typescript-eslint/no-unused-vars
+declare const tron: unknown // eslint-disable-line @typescript-eslint/no-unused-vars
 
 declare global {
   let __TEST__: boolean

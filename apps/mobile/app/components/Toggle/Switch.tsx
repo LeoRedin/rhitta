@@ -161,8 +161,8 @@ function SwitchInput(props: SwitchInputProps) {
         ]}
       />
 
-      <SwitchAccessibilityLabel {...props} />
-      <SwitchAccessibilityLabel {...props} />
+      <SwitchAccessibilityLabel {...props} position="on" />
+      <SwitchAccessibilityLabel {...props} position="off" />
 
       <Animated.View
         style={[
@@ -178,11 +178,11 @@ function SwitchInput(props: SwitchInputProps) {
 }
 
 /**
- * @param {ToggleInputProps & { role: "on" | "off" }} props - The props for the `SwitchAccessibilityLabel` component.
+ * @param {SwitchInputProps & { position: "on" | "off" }} props - The props for the `SwitchAccessibilityLabel` component.
  * @returns {JSX.Element} The rendered `SwitchAccessibilityLabel` component.
  */
-function SwitchAccessibilityLabel(props: SwitchInputProps & { role: 'on' | 'off' }) {
-  const { on, disabled, status, accessibilityMode, role, innerStyle, detailStyle } = props
+function SwitchAccessibilityLabel(props: SwitchInputProps & { position: 'on' | 'off' }) {
+  const { on, disabled, status, accessibilityMode, position, innerStyle, detailStyle } = props
 
   const {
     theme: { colors },
@@ -190,12 +190,12 @@ function SwitchAccessibilityLabel(props: SwitchInputProps & { role: 'on' | 'off'
 
   if (!accessibilityMode) return null
 
-  const shouldLabelBeVisible = (on && role === 'on') || (!on && role === 'off')
+  const shouldLabelBeVisible = (on && position === 'on') || (!on && position === 'off')
 
   const $switchAccessibilityStyle: StyleProp<ViewStyle> = [
     $switchAccessibility,
-    role === 'off' && { end: '5%' },
-    role === 'on' && { left: '5%' },
+    position === 'off' && { end: '5%' },
+    position === 'on' && { left: '5%' },
   ]
 
   const color = (() => {
@@ -210,10 +210,10 @@ function SwitchAccessibilityLabel(props: SwitchInputProps & { role: 'on' | 'off'
       {accessibilityMode === 'text' && shouldLabelBeVisible && (
         <View
           style={[
-            role === 'on' && $switchAccessibilityLine,
-            role === 'on' && { backgroundColor: color },
-            role === 'off' && $switchAccessibilityCircle,
-            role === 'off' && { borderColor: color },
+            position === 'on' && $switchAccessibilityLine,
+            position === 'on' && { backgroundColor: color },
+            position === 'off' && $switchAccessibilityCircle,
+            position === 'off' && { borderColor: color },
           ]}
         />
       )}
@@ -221,7 +221,7 @@ function SwitchAccessibilityLabel(props: SwitchInputProps & { role: 'on' | 'off'
       {accessibilityMode === 'icon' && shouldLabelBeVisible && (
         <Image
           style={[$switchAccessibilityIcon, { tintColor: color }]}
-          source={role === 'off' ? iconRegistry.hidden : iconRegistry.view}
+          source={position === 'off' ? iconRegistry.hidden : iconRegistry.view}
         />
       )}
     </View>
