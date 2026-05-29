@@ -1,9 +1,14 @@
 import { execFileSync } from 'node:child_process'
+import { randomBytes } from 'node:crypto'
 import { cpSync, existsSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { fillEnvFromExample } from './env.js'
 import { renderReadme } from './readme.js'
 import { deriveToolVersions } from './toolversions.js'
 import type { ScaffoldParams } from './types.js'
+
+/** Apps whose committed `.env.example` is copied to a runnable `.env`. */
+const ENV_APPS = ['api', 'web', 'mobile']
 
 /** Move the transformed temp tree into the target dir, write README, git init, install, build. */
 export function finalize(
@@ -38,6 +43,17 @@ export function finalize(
   const rubyVersionPath = resolve(target, '.ruby-version')
   const ruby = existsSync(rubyVersionPath) ? readFileSync(rubyVersionPath, 'utf8') : undefined
   writeFileSync(resolve(target, '.tool-versions'), deriveToolVersions(nvmrc, packageManager, ruby))
+
+  // Copy each app's .env.example -> .env (gitignored) with a generated dev auth secret,
+  // so the project runs locally without hand-editing env files.
+  const betterAuthSecret = randomBytes(32).toString('base64')
+  for (const app of ENV_APPS) {
+    const example = resolve(target, 'apps', app, '.env.example')
+    const dotenv = resolve(target, 'apps', app, '.env')
+    if (existsSync(example) && !existsSync(dotenv)) {
+      writeFileSync(dotenv, fillEnvFromExample(readFileSync(example, 'utf8'), betterAuthSecret))
+    }
+  }
 
   if (opts.git) {
     execFileSync('git', ['init', '-q'], { cwd: target })
