@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    name: Build and publish
+    name: Build and validate (publish gated)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,6 +31,11 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # Shared packages export from dist/; build BEFORE typecheck so the apps resolve
+      # them (matches ci.yml). Previously this ran after typecheck and broke on tags.
+      - name: Build packages
+        run: pnpm -r --filter './packages/*' build
+
       - name: Lint
         run: pnpm lint
 
@@ -40,10 +45,17 @@ jobs:
       - name: Validate
         run: pnpm validate
 
-      - name: Build packages
-        run: pnpm -r --filter './packages/*' build
-
-      - name: Publish
-        run: pnpm changeset publish --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # -----------------------------------------------------------------------
+      # Publishing is DISABLED until the v0 validation milestone completes.
+      # Project lock: Rhitta does not publish @rhitta/* to npm before a real app
+      # is built on v0. `create-rhitta` is published MANUALLY and independently
+      # (`cd tools/create-rhitta && pnpm publish --access public`).
+      #
+      # Re-enable only after the milestone: add the NPM_TOKEN secret and confirm
+      # `changeset publish` scope is intended (it would publish every non-private
+      # workspace package, including create-rhitta).
+      # -----------------------------------------------------------------------
+      # - name: Publish
+      #   run: pnpm changeset publish --provenance
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

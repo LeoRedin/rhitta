@@ -13,9 +13,10 @@ export interface ResolveSourceOptions {
 }
 
 const DEFAULT_REPO = 'LeoRedin/rhitta'
-// Pinned release tag the published CLI vendors by default, for reproducible scaffolds.
-// Bump in lockstep with the git tag whenever create-rhitta is re-published.
-const DEFAULT_REF = 'v0.1.0'
+// Vendor the default branch during the v0 validation phase so scaffolds pick up
+// in-flight fixes. Switch to a pinned tag for reproducible public releases once the
+// validation milestone completes (and the `v*` release trigger is reconciled).
+const DEFAULT_REF = 'main'
 
 /**
  * Materialize a clean copy of the Rhitta tree into a fresh temp directory.
