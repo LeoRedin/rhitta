@@ -8,6 +8,8 @@ const STRIP_PATHS = [
   'docs/superpowers',
   'apps/mobile/scripts/rhitta-overlay.sh',
   'apps/mobile/.rhitta-overlay-applied',
+  // The scaffolder itself is not part of a downstream product repo.
+  'tools/create-rhitta',
 ]
 
 /** Workspace roots whose CHANGELOG.md (if present) is Rhitta's release history. */

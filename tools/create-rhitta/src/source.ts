@@ -13,6 +13,9 @@ export interface ResolveSourceOptions {
 }
 
 const DEFAULT_REPO = 'LeoRedin/rhitta'
+// Pinned release tag the published CLI vendors by default, for reproducible scaffolds.
+// Bump in lockstep with the git tag whenever create-rhitta is re-published.
+const DEFAULT_REF = 'v0.1.0'
 
 /**
  * Materialize a clean copy of the Rhitta tree into a fresh temp directory.
@@ -32,7 +35,7 @@ export async function resolveSource(opts: ResolveSourceOptions): Promise<string>
   }
   const { default: tiged } = await import('tiged')
   const repo = opts.repo ?? DEFAULT_REPO
-  const src = opts.ref ? `${repo}#${opts.ref}` : repo
-  await tiged(src, { cache: false, force: true, verbose: false }).clone(dest)
+  const ref = opts.ref ?? DEFAULT_REF
+  await tiged(`${repo}#${ref}`, { cache: false, force: true, verbose: false }).clone(dest)
   return dest
 }
