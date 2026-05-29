@@ -194,6 +194,14 @@ rtk proxy git commit -m "chore(mobile): drop eslint/prettier/dependency-cruiser 
 
 ---
 
+## Task 3.5: Make mobile typecheck clean (added mid-execution)
+
+Wiring mobile into `typecheck` (Task 3's `compile`→`typecheck` rename) exposed 8 pre-existing type errors mobile was hiding. Per Leo's directive ("genuinely clean from day 0, parity with web, centralize where it generalizes, mobile-local exceptions OK"), fix them. Approach: **Option X** — single tsconfig like web, drop the over-restrictive `types: ["react-native"]` so jest/node ambient types resolve; tests are typechecked alongside app code (web parity).
+
+**Files:** `packages/tsconfig/mobile.json` (centralized), `apps/mobile/package.json` (+devDeps), `apps/mobile/tsconfig.json` if needed, `apps/mobile/app/components/Toggle/Switch.tsx` (real bug), delete orphan `apps/mobile/test/test-tsconfig.json` if unreferenced, `pnpm-lock.yaml`.
+
+This task's commit supersedes Task 3's blocked commit — Task 3's staged edits (scripts/devDeps) land together with these fixes in one commit.
+
 ## Task 4: Verify the gate is green end-to-end
 
 **Files:** none (verification only)
