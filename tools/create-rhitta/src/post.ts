@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { cpSync, existsSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { renderReadme } from './readme.js'
 import type { ScaffoldParams } from './types.js'
@@ -16,6 +16,15 @@ export function finalize(
   }
   cpSync(tempTree, target, { recursive: true })
   rmSync(tempTree, { recursive: true, force: true })
+
+  // git archive may not preserve the CLAUDE.md → AGENTS.md symlink; structure-validator requires it.
+  const claudeMd = resolve(target, 'CLAUDE.md')
+  try {
+    rmSync(claudeMd, { force: true })
+    symlinkSync('AGENTS.md', claudeMd)
+  } catch {
+    // symlink already valid or filesystem does not support symlinks — not fatal.
+  }
 
   writeFileSync(resolve(target, 'README.md'), renderReadme(params))
 
