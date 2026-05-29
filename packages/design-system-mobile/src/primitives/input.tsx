@@ -11,6 +11,7 @@ import { Label } from "./label.js";
 export type InputProps = {
 	value?: string;
 	onChangeText?: RNTextInputProps["onChangeText"];
+	onBlur?: () => void;
 	placeholder?: string;
 	error?: string;
 	label?: string;
@@ -30,6 +31,7 @@ export function Input({
 	secureTextEntry,
 	keyboardType,
 	autoCapitalize,
+	onBlur: onBlurProp,
 }: InputProps) {
 	const [focused, setFocused] = useState(false);
 	const inputRef = useRef<import("react-native").TextInput>(null);
@@ -55,7 +57,10 @@ export function Input({
 				autoCapitalize={autoCapitalize}
 				aria-invalid={error ? "true" : undefined}
 				onFocus={() => setFocused(true)}
-				onBlur={() => setFocused(false)}
+				onBlur={() => {
+					setFocused(false);
+					onBlurProp?.();
+				}}
 				style={{
 					flex: 1,
 					width: "100%",

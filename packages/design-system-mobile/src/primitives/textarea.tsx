@@ -11,6 +11,7 @@ import { Label } from "./label.js";
 export type TextareaProps = {
 	value?: string;
 	onChangeText?: RNTextInputProps["onChangeText"];
+	onBlur?: () => void;
 	placeholder?: string;
 	error?: string;
 	label?: string;
@@ -26,6 +27,7 @@ export function Textarea({
 	label,
 	disabled = false,
 	numberOfLines = 4,
+	onBlur: onBlurProp,
 }: TextareaProps) {
 	const [focused, setFocused] = useState(false);
 	const inputRef = useRef<import("react-native").TextInput>(null);
@@ -51,7 +53,10 @@ export function Textarea({
 				textAlignVertical="top"
 				aria-invalid={error ? "true" : undefined}
 				onFocus={() => setFocused(true)}
-				onBlur={() => setFocused(false)}
+				onBlur={() => {
+					setFocused(false);
+					onBlurProp?.();
+				}}
 				style={{
 					flex: 1,
 					width: "100%",

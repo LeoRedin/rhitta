@@ -37,11 +37,13 @@
 		"clean": "rm -rf dist"
 	},
 	"dependencies": {
-		"@rhitta/design-tokens": "workspace:*"
+		"@rhitta/design-tokens": "workspace:*",
+		"@tanstack/react-form": "1.32.1"
 	},
 	"peerDependencies": {
 		"react": ">=19.0.0",
-		"react-native": ">=0.76.0"
+		"react-native": ">=0.76.0",
+		"zod": ">=4.0.0"
 	},
 	"devDependencies": {
 		"@rhitta/biome-config": "workspace:*",
@@ -52,6 +54,7 @@
 		"react": "19.2.6",
 		"react-test-renderer": "19.2.6",
 		"typescript": "6.0.3",
-		"vitest": "4.1.7"
+		"vitest": "4.1.7",
+		"zod": "4.4.3"
 	}
 }
