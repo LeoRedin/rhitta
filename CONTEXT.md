@@ -16,7 +16,11 @@ A workspace under `packages/*` that is published (or will be published) to npm u
 
 ## Internal tool
 
-A workspace under `tools/*` that is **never published**. Consumed only within this repo or via copy-at-scaffold into downstream projects. Examples: `tools/structure-validator`, future `tools/create-rhitta`, future `tools/generators`. Excluded from changesets `fixed[]` and listed in changesets `ignore[]`.
+A workspace under `tools/*` that is **never published**. Consumed only within this repo or via copy-at-scaffold into downstream projects. Examples: `tools/structure-validator`, future `tools/generators`. Excluded from changesets `fixed[]` and listed in changesets `ignore[]`.
+
+## Published CLI
+
+A workspace under `tools/*` that **is** published to npm — the sole exception to "internal tool." Currently just `create-rhitta`: the public scaffolder, published unscoped so `npm create rhitta@latest`, `pnpm create rhitta`, and `npx create-rhitta` all resolve to it. It carries its own independent version (not in the `@rhitta/*` fixed[] group — see ADR-0010) because consumers run it standalone before any `@rhitta/*` package is installed. See ADR-0027.
 
 ## Module (API)
 
