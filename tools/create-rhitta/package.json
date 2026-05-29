@@ -1,0 +1,32 @@
+{
+  "name": "create-rhitta",
+  "version": "0.1.0",
+  "description": "Scaffold a new Rhitta monorepo project.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-rhitta": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "pnpm run typecheck && pnpm run test"
+  },
+  "dependencies": {
+    "@clack/prompts": "0.11.0",
+    "tiged": "2.12.8"
+  },
+  "devDependencies": {
+    "@rhitta/biome-config": "workspace:*",
+    "@rhitta/tsconfig": "workspace:*",
+    "@types/node": "22.19.19",
+    "typescript": "6.0.3",
+    "vitest": "3.2.4"
+  }
+}

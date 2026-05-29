@@ -56,6 +56,17 @@ export const checkPackageNaming: Check = ({ repoRoot }) => {
       }
 
       const name = typeof pkg.name === 'string' ? pkg.name : ''
+      // The sole published CLI is unscoped by npm `create-*` convention (ADR-0027).
+      if (wsRel === 'tools/create-rhitta') {
+        if (name !== 'create-rhitta') {
+          failures.push({
+            path: `${wsRel}/package.json`,
+            reason: `package name "${name}" must equal "create-rhitta" (published CLI; ADR-0027)`,
+            adrRef: 'ADR-0027',
+          })
+        }
+        continue
+      }
       const expected = `@rhitta/${entry.name}`
       if (name !== expected) {
         failures.push({
