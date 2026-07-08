@@ -1,10 +1,33 @@
-import type { ScaffoldParams } from './types.js'
+import type { AppName, ScaffoldParams } from './types.js'
+
+const APP_LABEL: Record<AppName, string> = { api: 'API', web: 'web', mobile: 'mobile' }
+
+const DEV_COMMAND: Record<AppName, string> = {
+  api: 'pnpm dev:api      # Encore — auto-provisions a local Postgres (Docker) + runs migrations',
+  web: 'pnpm dev:web      # TanStack Start (Vite), points at the local API',
+  mobile:
+    'pnpm dev:mobile   # Expo — run `pnpm --filter @rhitta/mobile prebuild:clean` first for native iOS/Android',
+}
+
+const WORKSPACE_LINE: Record<AppName, string> = {
+  api: '- `apps/api` — Encore.ts service (Postgres + Better Auth).',
+  web: '- `apps/web` — TanStack Start SSR client.',
+  mobile:
+    '- `apps/mobile` — Expo / React Native app (run `pnpm --filter @rhitta/mobile prebuild:clean` to materialize native projects).',
+}
 
 export function renderReadme(p: ScaffoldParams): string {
+  const appList = p.apps.map((a) => APP_LABEL[a]).join(' + ')
+  const devCommands = p.apps.map((a) => DEV_COMMAND[a]).join('\n')
+  const workspaceLines = [
+    ...p.apps.map((a) => WORKSPACE_LINE[a]),
+    '- `packages/*` — shared contracts, design tokens, and config.',
+  ].join('\n')
+
   return `# ${p.appName}
 
 Bootstrapped with [Rhitta](https://github.com/LeoRedin/rhitta) — an opinionated,
-convention-enforced monorepo for API + web + mobile.
+convention-enforced monorepo for ${appList}.
 
 ## Setup
 
@@ -37,9 +60,7 @@ adapters when their keys are blank, so everything runs with no extra setup — d
 keys in \`apps/api/.env\` when you want them.
 
 \`\`\`bash
-pnpm dev:api      # Encore — auto-provisions a local Postgres (Docker) + runs migrations
-pnpm dev:web      # TanStack Start (Vite), points at the local API
-pnpm dev:mobile   # Expo — run \`pnpm --filter @rhitta/mobile prebuild:clean\` first for native iOS/Android
+${devCommands}
 \`\`\`
 
 No manual database setup or connection strings: Encore owns the local Postgres and applies
@@ -47,10 +68,7 @@ the Drizzle migrations on \`dev:api\` startup.
 
 ## Workspaces
 
-- \`apps/api\` — Encore.ts service (Postgres + Better Auth).
-- \`apps/web\` — TanStack Start SSR client.
-- \`apps/mobile\` — Expo / React Native app (run \`pnpm --filter @rhitta/mobile prebuild:clean\` to materialize native projects).
-- \`packages/*\` — shared contracts, design tokens, and config.
+${workspaceLines}
 
 ## Conventions
 

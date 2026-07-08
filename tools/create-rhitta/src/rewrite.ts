@@ -30,37 +30,41 @@ export function rewriteIdentifiers(root: string, p: ScaffoldParams): void {
 
   replaceOnce(join(root, 'apps/api/.env.example'), 'S3_BUCKET=rhitta', `S3_BUCKET=${p.slug}`)
 
-  // app.json is rewritten via targeted string replacement rather than JSON
-  // re-serialization: re-serializing expands short arrays like
-  // `"assetBundlePatterns": ["**/*"]` to multi-line, which Biome's formatter then
-  // rejects — making a fresh scaffold fail `pnpm lint` until the user runs
-  // `pnpm format`. Editing values in place keeps the file's Biome-clean formatting.
-  // `JSON.stringify(value)` yields a properly quoted+escaped JSON string literal.
-  const appJson = join(root, 'apps/mobile/app.json')
-  replaceOnce(appJson, '"name": "mobile"', `"name": ${JSON.stringify(p.appName)}`)
-  replaceOnce(appJson, '"slug": "mobile"', `"slug": ${JSON.stringify(p.slug)}`)
-  replaceOnce(appJson, '"scheme": "rhitta"', `"scheme": ${JSON.stringify(p.scheme)}`)
-  replaceOnce(appJson, '"package": "com.rhitta.app"', `"package": ${JSON.stringify(p.bundleId)}`)
-  replaceOnce(
-    appJson,
-    '"bundleIdentifier": "com.rhitta.app"',
-    `"bundleIdentifier": ${JSON.stringify(p.bundleId)}`
-  )
+  // Mobile identifiers — only when the mobile app is included (pruned otherwise).
+  if (p.apps.includes('mobile')) {
+    // app.json is rewritten via targeted string replacement rather than JSON
+    // re-serialization: re-serializing expands short arrays like
+    // `"assetBundlePatterns": ["**/*"]` to multi-line, which Biome's formatter then
+    // rejects — making a fresh scaffold fail `pnpm lint` until the user runs
+    // `pnpm format`. Editing values in place keeps the file's Biome-clean formatting.
+    // `JSON.stringify(value)` yields a properly quoted+escaped JSON string literal.
+    const appJson = join(root, 'apps/mobile/app.json')
+    replaceOnce(appJson, '"name": "mobile"', `"name": ${JSON.stringify(p.appName)}`)
+    replaceOnce(appJson, '"slug": "mobile"', `"slug": ${JSON.stringify(p.slug)}`)
+    replaceOnce(appJson, '"scheme": "rhitta"', `"scheme": ${JSON.stringify(p.scheme)}`)
+    replaceOnce(appJson, '"package": "com.rhitta.app"', `"package": ${JSON.stringify(p.bundleId)}`)
+    replaceOnce(
+      appJson,
+      '"bundleIdentifier": "com.rhitta.app"',
+      `"bundleIdentifier": ${JSON.stringify(p.bundleId)}`
+    )
 
-  editJson(join(root, 'apps/mobile/package.json'), (j) => {
-    const scripts = j.scripts as Record<string, string> | undefined
-    if (scripts?.['test:maestro']) {
-      scripts['test:maestro'] = scripts['test:maestro'].replace(
-        'MAESTRO_APP_ID=com.rhitta.app',
-        `MAESTRO_APP_ID=${p.bundleId}`
-      )
-    }
-  })
+    editJson(join(root, 'apps/mobile/package.json'), (j) => {
+      const scripts = j.scripts as Record<string, string> | undefined
+      if (scripts?.['test:maestro']) {
+        scripts['test:maestro'] = scripts['test:maestro'].replace(
+          'MAESTRO_APP_ID=com.rhitta.app',
+          `MAESTRO_APP_ID=${p.bundleId}`
+        )
+      }
+    })
+  }
 
-  for (const rel of [
-    'apps/mobile/scripts/gen-api-client.sh',
-    'apps/web/scripts/gen-api-client.sh',
-  ]) {
+  // Encore app id in each client generator — only for the included client apps.
+  const genApiClientScripts: string[] = []
+  if (p.apps.includes('mobile')) genApiClientScripts.push('apps/mobile/scripts/gen-api-client.sh')
+  if (p.apps.includes('web')) genApiClientScripts.push('apps/web/scripts/gen-api-client.sh')
+  for (const rel of genApiClientScripts) {
     replaceOnce(join(root, rel), 'APP_ID="rhitta"', `APP_ID="${p.encoreId}"`)
   }
 }

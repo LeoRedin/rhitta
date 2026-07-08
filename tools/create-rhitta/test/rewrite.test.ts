@@ -35,6 +35,7 @@ const PARAMS: ScaffoldParams = {
   encoreId: 'acme',
   scheme: 'acme',
   bundleId: 'com.acme.app',
+  apps: ['api', 'web', 'mobile'],
 }
 
 function tree(): string {
@@ -114,6 +115,20 @@ describe('rewriteIdentifiers', () => {
     expect(after).toBe(before)
     // Short arrays stayed on one line (the specific formatting Biome expects).
     expect(after).toContain('"assetBundlePatterns": ["**/*"]')
+  })
+
+  it('skips mobile and web file edits when those apps are not selected', () => {
+    const root = tree()
+    // Simulate a pruned api-only tree: the mobile + web apps are gone.
+    rmSync(join(root, 'apps/mobile'), { recursive: true, force: true })
+    rmSync(join(root, 'apps/web'), { recursive: true, force: true })
+
+    expect(() => rewriteIdentifiers(root, { ...PARAMS, apps: ['api'] })).not.toThrow()
+
+    // API identifiers are still rewritten.
+    expect(JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).name).toBe('acme')
+    expect(JSON.parse(readFileSync(join(root, 'apps/api/encore.app'), 'utf8')).id).toBe('acme')
+    expect(readFileSync(join(root, 'apps/api/.env.example'), 'utf8')).toContain('S3_BUCKET=acme')
   })
 
   it('does NOT touch @rhitta/* package namespaces', () => {

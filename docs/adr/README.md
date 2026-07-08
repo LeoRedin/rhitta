@@ -39,6 +39,7 @@ ADRs capture decisions that shape Rhitta. Each is short by design — read in un
 | [0025](./0025-mobile-post-install-overlay.md) | Mobile post-install overlay | `npx ignite-cli new` + idempotent `rhitta-overlay.sh` patches generated files |
 | [0026](./0026-platform-correct-test-runners.md) | Platform-correct test runners | Mobile tests on jest-expo; web/api on Vitest — different problems, ecosystem-correct tools |
 | [0027](./0027-create-rhitta-vendored-scaffold.md) | create-rhitta vendored scaffold | Public unscoped CLI vendors the whole monorepo; keeps `@rhitta/*`, rewrites project ids; independent version |
+| [0028](./0028-create-rhitta-selectable-apps.md) | create-rhitta selectable apps | Choose apps at scaffold time (`api` mandatory); prune engine removes deselected app + its design system + dead refs |
 
 ## Authoring a new ADR
 

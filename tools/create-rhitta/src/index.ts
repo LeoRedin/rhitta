@@ -2,6 +2,7 @@
 import { log } from '@clack/prompts'
 import { finalize } from './post.js'
 import { collectParams, parseFlags } from './prompts.js'
+import { pruneApps } from './prune.js'
 import { rewriteIdentifiers } from './rewrite.js'
 import { resolveSource } from './source.js'
 import { applyStripList } from './strip.js'
@@ -12,14 +13,19 @@ async function main(): Promise<void> {
 
   const tree = await resolveSource({ from: flags.from, ref: flags.ref })
   applyStripList(tree)
+  // Prune deselected apps before rewriting ids so the rewrite only touches kept apps.
+  pruneApps(tree, params.apps)
   rewriteIdentifiers(tree, params)
   const target = finalize(tree, params, { install: flags.install, git: flags.git })
 
-  log.success(`Created ${params.appName} at ${target}`)
+  const mobileNote = params.apps.includes('mobile')
+    ? ' For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
+    : ''
+  log.success(`Created ${params.appName} (${params.apps.join(', ')}) at ${target}`)
   log.info(
-    flags.install
-      ? 'Next: `cd` in, then `pnpm validate`. For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
-      : 'Next: `cd` in, then `pnpm install && pnpm build`, then `pnpm validate`. For mobile native projects run `pnpm --filter @rhitta/mobile prebuild:clean`.'
+    (flags.install
+      ? 'Next: `cd` in, then `pnpm validate`.'
+      : 'Next: `cd` in, then `pnpm install && pnpm build`, then `pnpm validate`.') + mobileNote
   )
 }
 
