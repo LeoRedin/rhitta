@@ -15,7 +15,7 @@
 // =============================================================================
 
 import { describe, expect, it, jest } from '@jest/globals'
-import { renderHook } from '@testing-library/react-native'
+import { act, renderHook } from '@testing-library/react-native'
 import { useRealtimeSubscription } from '../use-realtime-subscription'
 
 beforeEach(() => {
@@ -34,11 +34,19 @@ afterEach(() => {
 })
 
 describe('useRealtimeSubscription', () => {
-  it('starts with status closed and no error', () => {
+  it('starts with status closed and no error', async () => {
     const callback = jest.fn()
     const { result } = renderHook(() => useRealtimeSubscription('note-created', callback, []))
 
     expect(result.current.status).toBe('closed')
     expect(result.current.error).toBeNull()
+
+    // The mount effect kicks off an async dynamic import of the transport, whose
+    // settlement schedules a state update. Flush those pending microtasks/timers
+    // inside act() so the trailing update lands here instead of after the test
+    // (which triggers React's "not wrapped in act(...)" warning).
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
   })
 })
