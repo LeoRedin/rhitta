@@ -8,7 +8,10 @@ convention-enforced monorepo for API + web + mobile.
 
 ## Setup
 
-Toolchain versions are pinned in \`.tool-versions\` (Node, pnpm, Ruby).
+Toolchain versions are pinned in \`.tool-versions\` (Node, pnpm, Ruby), derived from
+\`.nvmrc\` + \`packageManager\`. The pinned Node patch is a real published release; if
+\`asdf install\` reports it as not found, your plugin index is stale — run
+\`asdf plugin update nodejs\` (and \`asdf plugin update ruby\`) first.
 
 \`\`\`bash
 # asdf users — installs the pinned Node, pnpm, and Ruby (Ruby is needed for iOS CocoaPods):
