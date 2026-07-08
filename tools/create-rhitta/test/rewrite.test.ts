@@ -1,9 +1,27 @@
+import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { rewriteIdentifiers } from '../src/rewrite.js'
 import type { ScaffoldParams } from '../src/types.js'
+
+// A Biome-clean app.json fixture (2-space indent, short arrays on one line, matching
+// the vendored `apps/mobile/app.json`). The rewrite must preserve this formatting so a
+// fresh scaffold passes `pnpm lint` with no manual `pnpm format` step.
+const CLEAN_APP_JSON = `{
+  "name": "mobile",
+  "slug": "mobile",
+  "scheme": "rhitta",
+  "assetBundlePatterns": ["**/*"],
+  "android": {
+    "package": "com.rhitta.app"
+  },
+  "ios": {
+    "bundleIdentifier": "com.rhitta.app"
+  }
+}
+`
 
 const cleanups: string[] = []
 afterEach(() => {
@@ -35,20 +53,7 @@ function tree(): string {
     JSON.stringify({ id: 'rhitta', lang: 'typescript' }, null, 2)
   )
   writeFileSync(join(root, 'apps', 'api', '.env.example'), 'PORT=4000\nS3_BUCKET=rhitta\n')
-  writeFileSync(
-    join(root, 'apps', 'mobile', 'app.json'),
-    JSON.stringify(
-      {
-        name: 'mobile',
-        slug: 'mobile',
-        scheme: 'rhitta',
-        android: { package: 'com.rhitta.app' },
-        ios: { bundleIdentifier: 'com.rhitta.app' },
-      },
-      null,
-      2
-    )
-  )
+  writeFileSync(join(root, 'apps', 'mobile', 'app.json'), CLEAN_APP_JSON)
   writeFileSync(
     join(root, 'apps', 'mobile', 'package.json'),
     JSON.stringify(
@@ -90,6 +95,25 @@ describe('rewriteIdentifiers', () => {
     expect(readFileSync(join(root, 'apps/web/scripts/gen-api-client.sh'), 'utf8')).toContain(
       'APP_ID="acme"'
     )
+  })
+
+  it('leaves app.json Biome-clean so a fresh scaffold lints without manual formatting', () => {
+    const root = tree()
+    rewriteIdentifiers(root, PARAMS)
+    const appJsonPath = join(root, 'apps/mobile/app.json')
+
+    const before = readFileSync(appJsonPath, 'utf8')
+    // Run the vendored Biome formatter with the repo's line width. If the rewrite left
+    // any non-Biome formatting (e.g. a re-serialized multi-line short array), --write
+    // would rewrite the file and `after` would differ.
+    execFileSync('pnpm', ['exec', 'biome', 'format', '--write', '--line-width=100', appJsonPath], {
+      stdio: 'ignore',
+    })
+    const after = readFileSync(appJsonPath, 'utf8')
+
+    expect(after).toBe(before)
+    // Short arrays stayed on one line (the specific formatting Biome expects).
+    expect(after).toContain('"assetBundlePatterns": ["**/*"]')
   })
 
   it('does NOT touch @rhitta/* package namespaces', () => {
